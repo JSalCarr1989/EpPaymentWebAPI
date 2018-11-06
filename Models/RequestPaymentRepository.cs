@@ -46,7 +46,8 @@ namespace EPWebAPI.Models {
         {
             int id;
             requestPayment.MpPaymentDatetime = DateTime.Now.ToString(StaticRequestEnterprisePayment.DATETIMEFORMAT);
-
+            try 
+            {
             using(IDbConnection conn = Connection)
             {
                 var parameters = new DynamicParameters();
@@ -104,9 +105,15 @@ namespace EPWebAPI.Models {
                             requestPayment.MpOrder,
                             requestPayment.MpReference
                 );
-            }
 
-            return id;
+                 return id;
+            }
+            }
+            catch(Exception ex)
+            {
+               _logger.Error(ex.ToString(),$"Failed Operation for serviceRequest:{requestPayment.MpOrder}");
+               return 0;
+            }
         }
 
         public async  Task<RequestPayment> GetById(int id)
