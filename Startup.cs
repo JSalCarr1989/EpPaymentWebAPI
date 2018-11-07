@@ -29,6 +29,7 @@ namespace EPWebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IRequestPaymentRepository,RequestPaymentRepository>();
+            services.AddTransient<ILogPaymentRepository,LogPaymentRepository>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
