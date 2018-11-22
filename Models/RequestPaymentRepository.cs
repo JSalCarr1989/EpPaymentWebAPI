@@ -66,6 +66,7 @@ namespace EPWebAPI.Models {
                 parameters.Add(StaticRequestEnterprisePayment.MP_URL_FAILURE,requestPayment.MpUrlFailure);
                 parameters.Add(StaticRequestEnterprisePayment.MP_REGISTER_SB,requestPayment.MpRegisterSb);
                 parameters.Add(StaticRequestEnterprisePayment.MP_PAYMENTDATETIME,requestPayment.MpPaymentDatetime);
+                parameters.Add(StaticRequestEnterprisePayment.BEGIN_PAYMENT_ID,requestPayment.BeginPaymentId);
                 parameters.Add(StaticRequestEnterprisePayment.REQUEST_PAYMENT_ID, 
                                     dbType: DbType.Int32, 
                                     direction: ParameterDirection.Output);

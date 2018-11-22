@@ -17,5 +17,7 @@ namespace EPWebAPI.Models
         public string MpRegisterSb {get;set;}
         public string MpPaymentDatetime {get;set;}
 
+        public int BeginPaymentId {get;set;}
+
     }
 }

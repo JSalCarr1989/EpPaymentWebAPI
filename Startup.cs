@@ -45,7 +45,8 @@ namespace EPWebAPI
             {
                 app.UseHsts();
             }
-            
+            app.UseCors(builder => 
+            builder.WithOrigins("http://localhost:3000"));
             app.UseHttpsRedirection();
             app.UseMvc();
         }

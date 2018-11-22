@@ -7,9 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Serilog.Events;
-using Serilog.Core;
-using Serilog;
+
 
 
 namespace EPWebAPI
@@ -34,7 +32,7 @@ namespace EPWebAPI
             }
             catch(Exception ex)
             {
-                Log.Fatal(ex, "Host Terminated unexpectedly");
+                Console.WriteLine(ex.ToString());
             }
             finally
             {
@@ -46,6 +44,7 @@ namespace EPWebAPI
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseIISIntegration()
                 .UseStartup<Startup>();
                 // .UseSerilog();
            

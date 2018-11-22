@@ -79,6 +79,11 @@ namespace EPWebAPI.Utilities
             get {return "@REQUEST_PAYMENT_ID";}
         }
 
+        public static string BEGIN_PAYMENT_ID
+        {
+            get {return "@BEGIN_PAYMENT_ID";}
+        }
+
         public static string SP_CREATE_REQUEST_ENTERPRISE_PAYMENT
         {
             get {return "SP_CREATE_REQUEST_ENTERPRISE_PAYMENT";}
