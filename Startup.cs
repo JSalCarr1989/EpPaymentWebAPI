@@ -30,6 +30,9 @@ namespace EPWebAPI
         {
             services.AddTransient<IRequestPaymentRepository,RequestPaymentRepository>();
             services.AddTransient<ILogPaymentRepository,LogPaymentRepository>();
+            services.AddTransient<IEndPaymentRepository, EndPaymentRepository>();
+            services.AddTransient<IResponseBankRequestTypeTibcoRepository, ResponseBankRequestTypeTibcoRepository>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 

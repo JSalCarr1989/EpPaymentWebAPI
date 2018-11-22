@@ -8,5 +8,6 @@ namespace EPWebAPI.Interfaces
     public interface ILogPaymentRepository 
     {
         Task<List<LogPayment>> GetByServiceRequestAndPaymentReference(string serviceRequest,string paymentReference);
+        LogPayment GetLastRequestPaymentId(decimal amount, string serviceRequest, string paymentReference, string StatusPayment);
     }
 }

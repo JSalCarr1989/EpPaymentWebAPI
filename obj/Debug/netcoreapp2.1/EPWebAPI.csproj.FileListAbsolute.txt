@@ -3,7 +3,6 @@ C:\Core\EPWebAPI\bin\Debug\netcoreapp2.1\EPWebAPI.runtimeconfig.json
 C:\Core\EPWebAPI\bin\Debug\netcoreapp2.1\EPWebAPI.runtimeconfig.dev.json
 C:\Core\EPWebAPI\bin\Debug\netcoreapp2.1\EPWebAPI.dll
 C:\Core\EPWebAPI\bin\Debug\netcoreapp2.1\EPWebAPI.pdb
-C:\Core\EPWebAPI\obj\Debug\netcoreapp2.1\EPWebAPI.csprojAssemblyReference.cache
 C:\Core\EPWebAPI\obj\Debug\netcoreapp2.1\EPWebAPI.csproj.CoreCompileInputs.cache
 C:\Core\EPWebAPI\obj\Debug\netcoreapp2.1\EPWebAPI.RazorAssemblyInfo.cache
 C:\Core\EPWebAPI\obj\Debug\netcoreapp2.1\EPWebAPI.RazorAssemblyInfo.cs

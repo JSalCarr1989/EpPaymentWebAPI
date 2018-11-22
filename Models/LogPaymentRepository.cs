@@ -48,5 +48,34 @@ namespace EPWebAPI.Models
 
              
         }
+
+        public LogPayment GetLastRequestPaymentId(decimal amount, string serviceRequest, string paymentReference, string StatusPayment)
+        {
+            LogPayment result = new LogPayment();
+
+            using(IDbConnection conn = Connection)
+            {
+                 try 
+                 {
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@PAYMENT_REQUEST_AMOUNT", amount);
+                    parameters.Add("@SERVICE_REQUEST", serviceRequest);
+                    parameters.Add("@PAYMENT_REFERENCE", paymentReference);
+                    parameters.Add("@STATUS_PAYMENT", StatusPayment);
+
+                    conn.Open();
+
+                    result =  conn.QueryFirstOrDefault("GET_LAST_REQUESTPAYMENT_ID",parameters, commandType: CommandType.StoredProcedure);
+
+                    return result;
+
+                 }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    return result;
+                }
+            }
+        }
     }
 }
