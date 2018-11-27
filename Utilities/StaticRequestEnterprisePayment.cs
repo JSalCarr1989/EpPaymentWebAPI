@@ -1,5 +1,8 @@
 
 
+using System;
+using System.Security.Cryptography;
+
 namespace EPWebAPI.Utilities 
 {
     public static class StaticRequestEnterprisePayment 
@@ -146,6 +149,23 @@ namespace EPWebAPI.Utilities
                         "Generated Id for Request Payment {RequestPaymentGeneratedId}" +
                         "from the ServiceRequest: {ServiceRequest}" +
                         "and BillingAccount: {BillingAccount}";
+            }
+        }
+
+      public static string ComputeSha256Hash(string rawData,string secret)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                secret = secret ?? "";
+                var encoding = new System.Text.ASCIIEncoding();
+                byte[] keyByte = encoding.GetBytes(secret);
+                byte[] messageBytes = encoding.GetBytes(rawData);
+
+                using (var hmacsha256 = new HMACSHA256(keyByte))
+                {
+                    byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
+                    return Convert.ToBase64String(hashmessage);
+                }
             }
         }
 
