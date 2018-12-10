@@ -26,9 +26,21 @@ namespace EPWebAPI.Helpers
                 using (var hmacsha256 = new HMACSHA256(keyByte))
                 {
                     byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
-                    return Convert.ToBase64String(hashmessage);
+                    return ByteToString(hashmessage);
                 }
             }
+        }
+
+    public static string ByteToString(byte[] buff)
+        {
+            string sbinary = "";
+
+
+            for (int i = 0; i < buff.Length; i++)
+            {
+                sbinary += buff[i].ToString("X2"); // hex format
+            }
+            return (sbinary).ToLower();
         }
 
       public static Boolean ValidateMultipagosHash(MultiPagosResponsePaymentDTO multipagosResponse)

@@ -18,12 +18,15 @@ namespace EPWebAPI.Controllers
         private readonly IEndPaymentRepository _endPaymentRepository;
         private readonly IResponseBankRequestTypeTibcoRepository _responseBankRequestTypeTibcoRepository;
 
-        public ServerToServerResponseController(ILogPaymentRepository logPaymentRepository,IResponsePaymentRepository responsePaymentRepository,IEndPaymentRepository endPaymentRepository,IResponseBankRequestTypeTibcoRepository responseBankRequestTypeTibcoRepository)
+        private readonly ISentToTibcoRepository _sentToTibcoRepo;
+
+        public ServerToServerResponseController(ILogPaymentRepository logPaymentRepository,IResponsePaymentRepository responsePaymentRepository,IEndPaymentRepository endPaymentRepository,IResponseBankRequestTypeTibcoRepository responseBankRequestTypeTibcoRepository, ISentToTibcoRepository sentToTibcoRepo)
         {
             _logPaymentRepository = logPaymentRepository;
             _responsePaymentRepository = responsePaymentRepository;
             _endPaymentRepository = endPaymentRepository;
             _responseBankRequestTypeTibcoRepository = responseBankRequestTypeTibcoRepository;
+            _sentToTibcoRepo = sentToTibcoRepo;
         }
         
         // POST api/values
@@ -33,6 +36,8 @@ namespace EPWebAPI.Controllers
 
          var validHash = ServerToServerResponsePaymentHelper.ValidateMultipagosHash(multipagosResponse); 
 
+         var hashStatus = (validHash) ? "HASH_VALIDO" : "HASH_INVALIDO";
+
          var logPayment = _logPaymentRepository.GetLastRequestPaymentId(
             multipagosResponse.mp_amount,
             multipagosResponse.mp_order,
@@ -40,37 +45,26 @@ namespace EPWebAPI.Controllers
             "REQUEST_PAYMENT"
         );
 
-        if(validHash)
-        {
-
             var responsePaymentDTO = ServerToServerResponsePaymentHelper.GenerateResponsePaymentDTO(
                 multipagosResponse,
                 logPayment.RequestPaymentId,
-                "HASH_VALIDO"
+                hashStatus
             );
 
             int responsePaymentId = _responsePaymentRepository.CreateResponsePayment(responsePaymentDTO);
 
+            var sentExists = _sentToTibcoRepo.GetEndPaymentSentToTibco("ENVIADO_TIBCO", "MULTIPAGOS_POST", responsePaymentId);
+
             var endPayment = _endPaymentRepository.GetEndPaymentByResponsePaymentId(responsePaymentId);
 
-                  if (_endPaymentRepository.ValidateEndPaymentSentStatus(endPayment.EndPaymentId) != true)
-                {
+            if(!sentExists)
+            {
                     string resultMessage = await _responseBankRequestTypeTibcoRepository.SendEndPaymentToTibco(endPayment);
                     //Si la respuesta fue satisfactoria actualiza el estatus de endpayment en bd a enviado.
                     if(resultMessage == "OK")
                     {
                         var udpatedEndPaymentId = _endPaymentRepository.UpdateEndPaymentSentStatus(endPayment.EndPaymentId, "ENVIADO_TIBCO");
                     }
-                }
-             
-        }else {
-                var responsePaymentDTO = ServerToServerResponsePaymentHelper.GenerateResponsePaymentDTO(
-                         multipagosResponse,
-                         logPayment.RequestPaymentId,
-                         "HASH_INVALIDO");
-
-                //3.- guardar el responsepayment en base de datos (endpayment se guarda a su vez con trigger)
-                int responsePaymentId = _responsePaymentRepository.CreateResponsePayment(responsePaymentDTO);
             }
 
         }
