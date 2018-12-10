@@ -32,6 +32,18 @@ namespace EPWebAPI
             services.AddTransient<ILogPaymentRepository,LogPaymentRepository>();
             services.AddTransient<IEndPaymentRepository, EndPaymentRepository>();
             services.AddTransient<IResponseBankRequestTypeTibcoRepository, ResponseBankRequestTypeTibcoRepository>();
+            services.AddTransient<IHashRepository,HashRepository>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                builder => {
+                    builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+                });
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -43,14 +55,16 @@ namespace EPWebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                
             }
             else
             {
                 app.UseHsts();
             }
-            app.UseCors(builder => 
-            builder.WithOrigins("http://localhost:3000"));
+            //app.UseCors(builder => 
+            //builder.WithOrigins("http://localhost:3000", "https://localhost:443"));
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
             app.UseMvc();
         }
     }

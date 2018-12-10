@@ -15,10 +15,12 @@ namespace EPWebAPI.Models
     {
 
         private readonly IConfiguration _config;
+        private readonly string _mpsk;
 
         public HashRepository(IConfiguration config)
         {
             _config = config;
+
         }
 
         public Hash CreateRequestHash(HashDTO hash)
@@ -27,8 +29,15 @@ namespace EPWebAPI.Models
 
             try
             {
-                 string rawString = hash.paymentOrder + hash.paymentReference + hash.paymentAmount;
-                 string MpSk = _config["MpSk"];
+                var environmentMpSk = Environment.GetEnvironmentVariable("MpSk", EnvironmentVariableTarget.Machine);
+
+                var _mpsk = !string.IsNullOrEmpty(environmentMpSk)
+                                       ? environmentMpSk
+                                       : _config["MpSk"];
+
+
+                string rawString =  hash.paymentOrder + hash.paymentReference  + hash.paymentAmount;
+                 string MpSk = _mpsk;
 
                  hashString = StaticRequestEnterprisePayment.ComputeSha256Hash(rawString,MpSk);
 

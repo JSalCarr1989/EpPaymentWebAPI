@@ -1,7 +1,6 @@
-
-
 using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace EPWebAPI.Utilities 
 {
@@ -157,17 +156,33 @@ namespace EPWebAPI.Utilities
             using (SHA256 sha256Hash = SHA256.Create())
             {
                 secret = secret ?? "";
+
                 var encoding = new System.Text.ASCIIEncoding();
-                byte[] keyByte = encoding.GetBytes(secret);
-                byte[] messageBytes = encoding.GetBytes(rawData);
+
+                 
+
+                byte[] keyByte = System.Text.Encoding.UTF8.GetBytes(secret);
+
+                byte[] messageBytes = System.Text.Encoding.UTF8.GetBytes(rawData);
 
                 using (var hmacsha256 = new HMACSHA256(keyByte))
                 {
                     byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
-                    return Convert.ToBase64String(hashmessage);
+                    return ByteToString(hashmessage);
                 }
             }
         }
 
+        public static string ByteToString(byte[] buff)
+        {
+            string sbinary = "";
+
+
+            for (int i = 0; i < buff.Length; i++)
+            {
+                sbinary += buff[i].ToString("X2"); // hex format
+            }
+            return (sbinary).ToLower();
+        }
     }
 }

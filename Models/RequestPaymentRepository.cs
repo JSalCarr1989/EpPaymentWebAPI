@@ -45,10 +45,11 @@ namespace EPWebAPI.Models {
         public async Task<int> Create(RequestPayment requestPayment)
         {
             int id;
+            IDbConnection conn = Connection;
             requestPayment.MpPaymentDatetime = DateTime.Now.ToString(StaticRequestEnterprisePayment.DATETIMEFORMAT);
             try 
             {
-            using(IDbConnection conn = Connection)
+            using(conn)
             {
                 var parameters = new DynamicParameters();
 
@@ -106,14 +107,20 @@ namespace EPWebAPI.Models {
                             requestPayment.MpOrder,
                             requestPayment.MpReference
                 );
+                    
 
                  return id;
             }
             }
+
             catch(Exception ex)
             {
                _logger.Error(ex.ToString(),$"Failed Operation for serviceRequest:{requestPayment.MpOrder}");
                return 0;
+            }
+            finally
+            {
+                conn.Close();
             }
         }
 
