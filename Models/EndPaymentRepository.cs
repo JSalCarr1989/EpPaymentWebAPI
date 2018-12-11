@@ -47,7 +47,7 @@ namespace EPWebAPI.Models
             }
         }
 
-        public int UpdateEndPaymentSentStatus(int endPaymentId,string endPaymentSentStatus)
+        public void UpdateEndPaymentSentStatus(int endPaymentId,string endPaymentSentStatus)
         {
             using (IDbConnection conn = Connection)
             {
@@ -64,7 +64,7 @@ namespace EPWebAPI.Models
 
                 conn.Query("UPDATE_ENDPAYMENT_SENT_STATUS",parameters,commandType: CommandType.StoredProcedure);
 
-                return  parameters.Get<int>("UPDATED_ENDPAYMENT_ID"); ;
+                
             }
         }
 

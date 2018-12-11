@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "849a1c0d0e909665cb3f9ef27162af44ba328371"
+    "signature": "9064f396ea52db12c7ebda786d47c26a281b8e66"
   },
   "compilationOptions": {
     "defines": [
@@ -35,6 +35,7 @@
           "Serilog.Settings.Configuration": "3.0.1",
           "Serilog.Sinks.Async": "1.3.1-dev-00063",
           "Serilog.Sinks.Console": "3.1.2-dev-00779",
+          "Serilog.Sinks.MSSqlServer": "5.1.2",
           "Serilog.Sinks.RollingFile": "3.3.1-dev-00771",
           "System.ServiceModel.Duplex": "4.4.4",
           "System.ServiceModel.Http": "4.4.4",
@@ -381,6 +382,39 @@
           "lib/netstandard1.3/Serilog.Sinks.File.dll": {}
         }
       },
+      "Serilog.Sinks.MSSqlServer/5.1.2": {
+        "dependencies": {
+          "Serilog": "2.7.2-dev-01033",
+          "Serilog.Sinks.PeriodicBatching": "2.1.1",
+          "System.Configuration.ConfigurationManager": "4.4.0",
+          "System.Data.SqlClient": "4.5.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Serilog.Sinks.MSSqlServer.dll": {
+            "assemblyVersion": "5.1.2.0",
+            "fileVersion": "5.1.2.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Serilog.Sinks.MSSqlServer.dll": {}
+        }
+      },
+      "Serilog.Sinks.PeriodicBatching/2.1.1": {
+        "dependencies": {
+          "Serilog": "2.7.2-dev-01033",
+          "System.Collections.Concurrent": "4.3.0",
+          "System.Threading.Timer": "4.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.2/Serilog.Sinks.PeriodicBatching.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.1.1.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard1.2/Serilog.Sinks.PeriodicBatching.dll": {}
+        }
+      },
       "Serilog.Sinks.RollingFile/3.3.1-dev-00771": {
         "dependencies": {
           "Serilog.Sinks.File": "3.2.0",
@@ -397,6 +431,20 @@
         },
         "compile": {
           "lib/netstandard1.3/Serilog.Sinks.RollingFile.dll": {}
+        }
+      },
+      "System.Configuration.ConfigurationManager/4.4.0": {
+        "dependencies": {
+          "System.Security.Cryptography.ProtectedData": "4.4.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Configuration.ConfigurationManager.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.6.25519.3"
+          }
+        },
+        "compile": {
+          "ref/netstandard2.0/System.Configuration.ConfigurationManager.dll": {}
         }
       },
       "System.Net.Http.WinHttpHandler/4.4.0": {
@@ -439,6 +487,22 @@
       },
       "System.Reflection.DispatchProxy/4.4.0": {},
       "System.Reflection.TypeExtensions/4.4.0": {},
+      "System.Security.Cryptography.ProtectedData/4.4.0": {
+        "runtime": {
+          "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll": {
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.6.25519.3"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.6.25519.3"
+          }
+        }
+      },
       "System.ServiceModel.Duplex/4.4.4": {
         "dependencies": {
           "System.Private.ServiceModel": "4.4.4",
@@ -3592,12 +3656,33 @@
       "path": "serilog.sinks.file/3.2.0",
       "hashPath": "serilog.sinks.file.3.2.0.nupkg.sha512"
     },
+    "Serilog.Sinks.MSSqlServer/5.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RKACHyMv5FPpT5LEa3UShx9W0jSWDASG7UHvYr/iFkr6q4+LKbuuKKnlCK23yDHJJ7YHbhgmh2NUh09tTId0Ow==",
+      "path": "serilog.sinks.mssqlserver/5.1.2",
+      "hashPath": "serilog.sinks.mssqlserver.5.1.2.nupkg.sha512"
+    },
+    "Serilog.Sinks.PeriodicBatching/2.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-b5MblvWJrT9qxRwLs0GiEHCc8iqbOKY0kWQP46RJE6slTZT7k40RbiRR2QLAQjCNRAJl/UJxr5GZ+8jsEmHRBA==",
+      "path": "serilog.sinks.periodicbatching/2.1.1",
+      "hashPath": "serilog.sinks.periodicbatching.2.1.1.nupkg.sha512"
+    },
     "Serilog.Sinks.RollingFile/3.3.1-dev-00771": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-pV+ipnE/97+Hrh1EnIE6+BuyvLLFTde9rnsGMKCOty2udoigfiQLODIASsTJe7CxGvgcYRTYvTKLX2zRBbN+SQ==",
       "path": "serilog.sinks.rollingfile/3.3.1-dev-00771",
       "hashPath": "serilog.sinks.rollingfile.3.3.1-dev-00771.nupkg.sha512"
+    },
+    "System.Configuration.ConfigurationManager/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RLYB3YOmdz9dE3zMhBFGv3GF74upGjH0nF0G9lFFRLNLsCEMIpiuQsMGv2qE0qdp1JdheVNO8RIRpUKdokiK+g==",
+      "path": "system.configuration.configurationmanager/4.4.0",
+      "hashPath": "system.configuration.configurationmanager.4.4.0.nupkg.sha512"
     },
     "System.Net.Http.WinHttpHandler/4.4.0": {
       "type": "package",
@@ -3626,6 +3711,13 @@
       "sha512": "sha512-JRxOAH6by+wn1gNnZc9jf2HbO/szhMJuLY2w44nEW77354WntXlFzWSVkx6280Uvcl3URZ/At+444vjX0/X1Aw==",
       "path": "system.reflection.typeextensions/4.4.0",
       "hashPath": "system.reflection.typeextensions.4.4.0.nupkg.sha512"
+    },
+    "System.Security.Cryptography.ProtectedData/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WwEexvBd+17yfY7fcS+fBGl+HADEfCJuKeDJqBT7D6j6vKwYvfLyGuq2y/MmrKORC6mbYwth7kjinO1mPhTL3g==",
+      "path": "system.security.cryptography.protecteddata/4.4.0",
+      "hashPath": "system.security.cryptography.protecteddata.4.4.0.nupkg.sha512"
     },
     "System.ServiceModel.Duplex/4.4.4": {
       "type": "package",
