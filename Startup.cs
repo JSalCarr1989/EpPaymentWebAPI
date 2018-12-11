@@ -33,6 +33,8 @@ namespace EPWebAPI
             services.AddTransient<IEndPaymentRepository, EndPaymentRepository>();
             services.AddTransient<IResponseBankRequestTypeTibcoRepository, ResponseBankRequestTypeTibcoRepository>();
             services.AddTransient<IHashRepository,HashRepository>();
+            services.AddTransient<IResponsePaymentRepository, ResponsePaymentRepository>();
+            services.AddTransient<ISentToTibcoRepository, SentToTibcoRepository >();
 
             services.AddCors(options =>
             {

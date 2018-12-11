@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using EPWebAPI.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using Dapper;
+using Serilog;
+using Serilog.Formatting.Compact;
+using System;
 
 namespace EPWebAPI.Models
 {
@@ -14,17 +13,37 @@ namespace EPWebAPI.Models
     {
 
         private IConfiguration _config;
+        private readonly string _connectionString;
+        private readonly ILogger _logger;
 
         public ResponsePaymentRepository(IConfiguration config)
         {
             _config = config;
+
+            var environmentConnectionString = Environment.GetEnvironmentVariable("EpPaymentDevConnectionStringEnvironment", EnvironmentVariableTarget.Machine);
+
+            var connectionString = !string.IsNullOrEmpty(environmentConnectionString)
+                                   ? environmentConnectionString
+                                   : _config.GetConnectionString("EpPaymentDevConnectionString");
+
+            _connectionString = connectionString;
+
+            var logger = new LoggerConfiguration()
+                        .MinimumLevel.Debug()
+                        .WriteTo.RollingFile(new CompactJsonFormatter(),
+                                              @"E:\LOG\EnterprisePaymentLog.json",
+                                              shared: true,
+                                              retainedFileCountLimit: 30
+                                              )
+                       .CreateLogger();
+            _logger = logger;
         }
 
         public IDbConnection Connection
         {
             get
             {
-                return new SqlConnection(_config.GetConnectionString("EpPaymentDevConnectionString"));
+                return new SqlConnection(_connectionString);
             }
         }
 

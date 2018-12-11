@@ -15,7 +15,7 @@ namespace EPWebAPI.Models
     {
 
         private readonly IConfiguration _config;
-        private readonly string _mpsk;
+        
 
         public HashRepository(IConfiguration config)
         {

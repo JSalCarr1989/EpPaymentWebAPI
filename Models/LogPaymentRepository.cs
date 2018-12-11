@@ -65,7 +65,7 @@ namespace EPWebAPI.Models
 
                     conn.Open();
 
-                    result =  conn.QueryFirstOrDefault("GET_LAST_REQUESTPAYMENT_ID",parameters, commandType: CommandType.StoredProcedure);
+                    result =  conn.QueryFirstOrDefault<LogPayment>("GET_LAST_REQUESTPAYMENT_ID",parameters, commandType: CommandType.StoredProcedure);
 
                     return result;
 

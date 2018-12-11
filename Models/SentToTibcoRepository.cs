@@ -5,7 +5,7 @@ using EPWebAPI.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 
-namespace EPPaymentWebApp.Models
+namespace EPWebAPI.Models
 {
     public class SentToTibcoRepository : ISentToTibcoRepository
     {

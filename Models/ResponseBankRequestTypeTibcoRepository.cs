@@ -26,7 +26,7 @@ namespace EPWebAPI.Models
 
             ResponseBankResponse response = await responsebank.ResponseBankAsync(request);
 
-            return response.ResponseBankResponse1.ErrorCode;
+            return response.ResponseBankResponse1.ErrorMessage;
         }
     }
 }

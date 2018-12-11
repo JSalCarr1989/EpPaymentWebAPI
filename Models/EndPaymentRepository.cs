@@ -1,29 +1,39 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using EPWebAPI.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Dapper;
+using Serilog;
+using Serilog.Formatting.Compact;
 
 namespace EPWebAPI.Models
 {
     public class EndPaymentRepository : IEndPaymentRepository
     {
         private readonly IConfiguration _config;
+        private readonly string _connectionString;
 
         public EndPaymentRepository(IConfiguration config)
         {
             _config = config;
+
+
+            var environmentConnectionString = Environment.GetEnvironmentVariable("EpPaymentDevConnectionStringEnvironment", EnvironmentVariableTarget.Machine);
+
+            var connectionString = !string.IsNullOrEmpty(environmentConnectionString)
+                       ? environmentConnectionString
+                       : _config.GetConnectionString("EpPaymentDevConnectionString");
+
+            _connectionString = connectionString;
+
         }
 
         public IDbConnection Connection
         {
             get
             {
-                return new SqlConnection(_config.GetConnectionString("EpPaymentDevConnectionString"));
+                return new SqlConnection(_connectionString);
             }
         }
 
@@ -52,9 +62,9 @@ namespace EPWebAPI.Models
 
                 conn.Open();
 
-                var result = conn.QueryFirstOrDefault<int>("UPDATE_ENDPAYMENT_SENT_STATUS",parameters,commandType: CommandType.StoredProcedure);
+                conn.Query("UPDATE_ENDPAYMENT_SENT_STATUS",parameters,commandType: CommandType.StoredProcedure);
 
-                return result;
+                return  parameters.Get<int>("UPDATED_ENDPAYMENT_ID"); ;
             }
         }
 

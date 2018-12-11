@@ -7,6 +7,7 @@ using System.Text;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace EPWebAPI.Helpers
 {
@@ -43,10 +44,21 @@ namespace EPWebAPI.Helpers
             return (sbinary).ToLower();
         }
 
-      public static Boolean ValidateMultipagosHash(MultiPagosResponsePaymentDTO multipagosResponse)
+      public static Boolean ValidateMultipagosHash(MultiPagosResponsePaymentDTO multipagosResponse,IConfiguration config)
         {
+
+            var environmentMpSk = Environment.GetEnvironmentVariable("MpSk", EnvironmentVariableTarget.Machine);
+
+            var _mpsk = !string.IsNullOrEmpty(environmentMpSk)
+                                   ? environmentMpSk
+                                   : config["MpSk"];
+
+
+            
+            string MpSk = _mpsk;
+
             var rawData = multipagosResponse.mp_order + multipagosResponse.mp_reference + multipagosResponse.mp_amount + multipagosResponse.mp_authorization;
-            var myHash = ComputeSha256Hash(rawData,"secretkey");
+            var myHash = ComputeSha256Hash(rawData, MpSk);
 
             if(myHash == multipagosResponse.mp_signature)
             {
@@ -73,8 +85,8 @@ namespace EPWebAPI.Helpers
                 MpPan = multiPagosResponse.mp_pan,
                 MpDate = multiPagosResponse.mp_date,
                 MpBankName = multiPagosResponse.mp_bankname,
-                MpFolio = multiPagosResponse.mp_folio,
-                MpSbToken = multiPagosResponse.mp_sbtoken,
+                MpFolio = string.IsNullOrWhiteSpace(multiPagosResponse.mp_folio) ? "NO_GENERADO" : multiPagosResponse.mp_folio,
+                MpSbToken = string.IsNullOrWhiteSpace(multiPagosResponse.mp_sbtoken) ? "NO_GENERADO" : multiPagosResponse.mp_sbtoken,
                 MpSaleId = multiPagosResponse.mp_saleid,
                 MpCardHolderName = multiPagosResponse.mp_cardholdername,
                 ResponsePaymentTypeDescription = "MULTIPAGOS_SERVER2SERVER",
