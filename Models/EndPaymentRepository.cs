@@ -56,9 +56,6 @@ namespace EPWebAPI.Models
 
                parameters.Add("@ENDPAYMENT_ID", endPaymentId);
                parameters.Add("@ENDPAYMENT_SENT_STATUS", endPaymentSentStatus);
-               parameters.Add("@UPDATED_ENDPAYMENT_ID", 
-                   dbType: DbType.Int32, 
-                   direction: ParameterDirection.Output);
 
                 conn.Open();
 
