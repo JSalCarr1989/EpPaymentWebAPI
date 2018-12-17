@@ -1,55 +1,45 @@
 using System;
 using System.Data;
-using System.Data.SqlClient;
 using EPWebAPI.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Dapper;
-using Serilog;
-using Serilog.Formatting.Compact;
 
 namespace EPWebAPI.Models
 {
     public class EndPaymentRepository : IEndPaymentRepository
     {
-        private readonly IConfiguration _config;
-        private readonly string _connectionString;
+        private readonly IDbConnectionRepository _dbConnectionRepository;
+        private readonly IDbLoggerRepository _dbLoggerRepository;
+        private readonly IDbConnection _conn;
 
-        public EndPaymentRepository(IConfiguration config)
+        public EndPaymentRepository(IDbConnectionRepository dbConnectionRepository,
+                                    IDbLoggerRepository dbLoggerRepository)
         {
-            _config = config;
-
-
-            var environmentConnectionString = Environment.GetEnvironmentVariable("EpPaymentDevConnectionStringEnvironment", EnvironmentVariableTarget.Machine);
-
-            var connectionString = !string.IsNullOrEmpty(environmentConnectionString)
-                       ? environmentConnectionString
-                       : _config.GetConnectionString("EpPaymentDevConnectionString");
-
-            _connectionString = connectionString;
-
-        }
-
-        public IDbConnection Connection
-        {
-            get
-            {
-                return new SqlConnection(_connectionString);
-            }
+            _dbConnectionRepository = dbConnectionRepository;
+            _dbLoggerRepository = dbLoggerRepository;
+            _conn = _dbConnectionRepository.CreateDbConnection();
         }
 
         public EndPayment GetEndPaymentByResponsePaymentId(int responsePaymentId)
         {
-            using (IDbConnection conn = Connection)
+            using (_conn)
             {
-                conn.Open();
-                var result = conn.QueryFirstOrDefault<EndPayment>("SP_EP_GET_ENDPAYMENT_BY_RESPONSEPAYMENT_ID", new { RESPONSEPAYMENT_ID = responsePaymentId },commandType: CommandType.StoredProcedure);
+                _conn.Open();
+
+                var result = _conn.QueryFirstOrDefault<EndPayment>(
+                    "SP_EP_GET_ENDPAYMENT_BY_RESPONSEPAYMENT_ID", 
+                    new { RESPONSEPAYMENT_ID = responsePaymentId },
+                    commandType: CommandType.StoredProcedure
+                    );
+
+                _dbLoggerRepository.LogGetEndPayment(responsePaymentId, result);
+
                 return result;
             }
         }
 
         public void UpdateEndPaymentSentStatus(int endPaymentId,string endPaymentSentStatus)
         {
-            using (IDbConnection conn = Connection)
+            using (_conn)
             {
               
                var parameters = new DynamicParameters();
@@ -57,20 +47,25 @@ namespace EPWebAPI.Models
                parameters.Add("@ENDPAYMENT_ID", endPaymentId);
                parameters.Add("@ENDPAYMENT_SENT_STATUS", endPaymentSentStatus);
 
-                conn.Open();
+                _conn.Open();
 
-                conn.Query("UPDATE_ENDPAYMENT_SENT_STATUS",parameters,commandType: CommandType.StoredProcedure);
+                _conn.Query("UPDATE_ENDPAYMENT_SENT_STATUS",parameters,commandType: CommandType.StoredProcedure);
 
-                
+                _dbLoggerRepository.LogUpdateEndPaymentSentStatus(endPaymentId, endPaymentSentStatus);
             }
         }
 
         public bool ValidateEndPaymentSentStatus(int endPaymentId)
         {
-            using (IDbConnection conn = Connection)
+            using (_conn)
             {
-                conn.Open();
-                var result = conn.QueryFirstOrDefault<String>("GET_ENDPAYMENT_SENT_STATUS_BY_ID", new { ENDPAYMENT_ID = endPaymentId }, commandType: CommandType.StoredProcedure);
+                _conn.Open();
+                var result = _conn.QueryFirstOrDefault<String>(
+                              "GET_ENDPAYMENT_SENT_STATUS_BY_ID", 
+                              new { ENDPAYMENT_ID = endPaymentId }, 
+                              commandType: CommandType.StoredProcedure
+                              );
+
                 return (result == "ENVIADO_TIBCO") ? true : false;
             }
         }

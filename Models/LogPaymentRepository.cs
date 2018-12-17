@@ -1,41 +1,40 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using EPWebAPI.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Dapper;
 using System;
-using EPWebAPI.Utilities;
 
 namespace EPWebAPI.Models 
 {
     public class LogPaymentRepository : ILogPaymentRepository
     {
-        private readonly IConfiguration _config;
+       
+        private readonly IDbLoggerRepository _dbLoggerRepository;
+        private readonly IDbConnectionRepository _connectionRepository;
+        private readonly IDbConnection _conn;
 
-        public LogPaymentRepository(IConfiguration config)
+        public LogPaymentRepository(
+                                    IDbLoggerRepository dbLoggerRepository,
+                                    IDbConnectionRepository connectionRepository
+                                  )
         {
-           _config = config;
+            _connectionRepository = connectionRepository;
+            _dbLoggerRepository = dbLoggerRepository;
+            _conn = connectionRepository.CreateDbConnection();
         }
 
-        public IDbConnection Connection
-        {
-            get 
-            {
-                return new SqlConnection(_config.GetConnectionString("EpWebAPIConnectionString"));
-            }
-        }
-
-        public async Task<List<LogPayment>> GetByServiceRequestAndPaymentReference(string serviceRequest, string paymentReference)
+        public async Task<List<LogPayment>> GetByServiceRequestAndPaymentReference(
+             string serviceRequest, 
+             string paymentReference
+            )
         {
 
-            using(IDbConnection conn = Connection)
+            using(_conn)
             {
-               conn.Open();
-              var result  = await conn.QueryAsync<LogPayment>(
+                _conn.Open();
+              var result  = await _conn.QueryAsync<LogPayment>(
                             "SP_MONITOR_EP_GET_LOGPAYMENT_BY_SR_PR",
                             new {
                                 SERVICE_REQUEST = serviceRequest,
@@ -49,11 +48,16 @@ namespace EPWebAPI.Models
              
         }
 
-        public LogPayment GetLastRequestPaymentId(decimal amount, string serviceRequest, string paymentReference, string StatusPayment)
+        public LogPayment GetLastRequestPaymentId(
+                           decimal amount, 
+                           string serviceRequest, 
+                           string paymentReference, 
+                           string StatusPayment
+            )
         {
             LogPayment result = new LogPayment();
 
-            using(IDbConnection conn = Connection)
+            using(_conn)
             {
                  try 
                  {
@@ -63,9 +67,15 @@ namespace EPWebAPI.Models
                     parameters.Add("@PAYMENT_REFERENCE", paymentReference);
                     parameters.Add("@STATUS_PAYMENT", StatusPayment);
 
-                    conn.Open();
+                    _conn.Open();
 
-                    result =  conn.QueryFirstOrDefault<LogPayment>("GET_LAST_REQUESTPAYMENT_ID",parameters, commandType: CommandType.StoredProcedure);
+                    result = _conn.QueryFirstOrDefault<LogPayment>(
+                        "GET_LAST_REQUESTPAYMENT_ID",
+                        parameters, 
+                        commandType: CommandType.StoredProcedure
+                        );
+
+                    _dbLoggerRepository.LogGetLastRequestPaymentId(amount, serviceRequest, paymentReference, StatusPayment, result.RequestPaymentId);
 
                     return result;
 

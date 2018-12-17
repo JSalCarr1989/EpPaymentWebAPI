@@ -1,56 +1,31 @@
 using EPWebAPI.Interfaces;
-using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Data.SqlClient;
 using Dapper;
-using Serilog;
-using Serilog.Formatting.Compact;
-using System;
 
 namespace EPWebAPI.Models
 {
     public class ResponsePaymentRepository : IResponsePaymentRepository
     {
 
-        private IConfiguration _config;
-        private readonly string _connectionString;
-        private readonly ILogger _logger;
+        private readonly IDbConnectionRepository _dbConnectionRepository;
+        private readonly IDbLoggerRepository _dbLoggerRepository;
+        private readonly IDbConnection _conn;
 
-        public ResponsePaymentRepository(IConfiguration config)
+        public ResponsePaymentRepository(
+                                        IDbConnectionRepository dbConnectionRepository,
+                                        IDbLoggerRepository dbLoggerRepository
+                                        )
         {
-            _config = config;
-
-            var environmentConnectionString = Environment.GetEnvironmentVariable("EpPaymentDevConnectionStringEnvironment", EnvironmentVariableTarget.Machine);
-
-            var connectionString = !string.IsNullOrEmpty(environmentConnectionString)
-                                   ? environmentConnectionString
-                                   : _config.GetConnectionString("EpPaymentDevConnectionString");
-
-            _connectionString = connectionString;
-
-            var logger = new LoggerConfiguration()
-                        .MinimumLevel.Debug()
-                        .WriteTo.RollingFile(new CompactJsonFormatter(),
-                                              @"E:\LOG\EnterprisePaymentLog.json",
-                                              shared: true,
-                                              retainedFileCountLimit: 30
-                                              )
-                       .CreateLogger();
-            _logger = logger;
-        }
-
-        public IDbConnection Connection
-        {
-            get
-            {
-                return new SqlConnection(_connectionString);
-            }
+            _dbConnectionRepository = dbConnectionRepository;
+            _dbLoggerRepository = dbLoggerRepository;
+            _conn = _dbConnectionRepository.CreateDbConnection();
         }
 
         public int CreateResponsePayment(ResponsePaymentDTO responseDTO)
         {
             int responsePaymentId;
-            using (IDbConnection conn = Connection)
+
+            using (_conn)
             {
                 var parameters = new DynamicParameters();
 
@@ -76,12 +51,18 @@ namespace EPWebAPI.Models
                                 dbType: DbType.Int32,
                                 direction: ParameterDirection.Output);
 
-                conn.Open();
+                _conn.Open();
 
-                conn.Query("SP_CREATE_RESPONSE_ENTERPRISE_PAYMENT",parameters,commandType: CommandType.StoredProcedure);
+                _conn.Query(
+                    "SP_CREATE_RESPONSE_ENTERPRISE_PAYMENT",
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                    );
 
 
                 responsePaymentId = parameters.Get<int>("RESPONSE_PAYMENT_ID");
+
+                _dbLoggerRepository.LogCreateResponsePayment(responseDTO, responsePaymentId);
 
                 return responsePaymentId;
 

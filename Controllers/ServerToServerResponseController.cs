@@ -2,11 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using EPWebAPI.Models;
 using EPWebAPI.Interfaces;
 using EPWebAPI.Helpers;
-using Serilog;
-using Serilog.Formatting.Compact;
-using System.IO;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace EPWebAPI.Controllers
 {
@@ -19,30 +15,26 @@ namespace EPWebAPI.Controllers
         private readonly IEndPaymentRepository _endPaymentRepository;
         private readonly IResponseBankRequestTypeTibcoRepository _responseBankRequestTypeTibcoRepository;
         private readonly ISentToTibcoRepository _sentToTibcoRepo;
-        private readonly ILogger _logger;
         private readonly IConfiguration _config;
+        private readonly IDbLoggerRepository _dbLoggerRepository;
 
-        public ServerToServerResponseController(ILogPaymentRepository logPaymentRepository,IResponsePaymentRepository responsePaymentRepository,IEndPaymentRepository endPaymentRepository,IResponseBankRequestTypeTibcoRepository responseBankRequestTypeTibcoRepository, ISentToTibcoRepository sentToTibcoRepo,IConfiguration config)
+        public ServerToServerResponseController(
+                            ILogPaymentRepository logPaymentRepository,
+                            IResponsePaymentRepository responsePaymentRepository,
+                            IEndPaymentRepository endPaymentRepository,
+                            IResponseBankRequestTypeTibcoRepository responseBankRequestTypeTibcoRepository, 
+                            ISentToTibcoRepository sentToTibcoRepo,
+                            IConfiguration config,
+                            IDbLoggerRepository dbLoggerRepository
+            )
         {
             _logPaymentRepository = logPaymentRepository;
             _responsePaymentRepository = responsePaymentRepository;
             _endPaymentRepository = endPaymentRepository;
             _responseBankRequestTypeTibcoRepository = responseBankRequestTypeTibcoRepository;
             _sentToTibcoRepo = sentToTibcoRepo;
-
-            var environmentConnectionString = Environment.GetEnvironmentVariable("EpPaymentDevConnectionStringEnvironment", EnvironmentVariableTarget.Machine);
-
-            var connectionString = !string.IsNullOrEmpty(environmentConnectionString)
-                       ? environmentConnectionString
-                       : _config.GetConnectionString("EpPaymentDevConnectionString");
-
-            var logger = new LoggerConfiguration()
-.MinimumLevel.Information()
-.WriteTo.MSSqlServer(connectionString, "Log")
-.CreateLogger();
-            _logger = logger;
+            _dbLoggerRepository = dbLoggerRepository;
             _config = config;
-
         }
         
         // POST api/values
@@ -50,14 +42,12 @@ namespace EPWebAPI.Controllers
         public async void Post([FromForm] MultiPagosResponsePaymentDTO multipagosResponse)
         {
 
-            EnterprisePaymentDbLogHelpers.LogResponsedDataToDb(
-                       _logger,
-                       multipagosResponse
-                       );
+            _dbLoggerRepository.LogResponsedDataToDb(multipagosResponse);
 
             var validHash = ServerToServerResponsePaymentHelper.ValidateMultipagosHash(
                             multipagosResponse,
-                            _config
+                            _config,
+                            _dbLoggerRepository
                             ); 
 
             var hashStatus = (validHash) ? "HASH_VALIDO" : "HASH_INVALIDO";
@@ -69,12 +59,6 @@ namespace EPWebAPI.Controllers
                 "REQUEST_PAYMENT"
                 );
 
-            EnterprisePaymentDbLogHelpers.LogGetLastRequestPaymentId(
-                     _logger,
-                     multipagosResponse,
-                    "REQUEST_PAYMENT",
-                    logPayment.RequestPaymentId
-                   );
 
             var responsePaymentDTO = ServerToServerResponsePaymentHelper.GenerateResponsePaymentDTO(
                 multipagosResponse,
@@ -84,11 +68,6 @@ namespace EPWebAPI.Controllers
 
             int responsePaymentId = _responsePaymentRepository.CreateResponsePayment(responsePaymentDTO);
 
-            EnterprisePaymentDbLogHelpers.LogCreateResponsePayment(
-                      _logger,
-                      responsePaymentDTO,
-                      responsePaymentId
-                      );
 
             var sentExists = _sentToTibcoRepo.GetEndPaymentSentToTibco(
                              "ENVIADO_TIBCO", 
@@ -96,38 +75,16 @@ namespace EPWebAPI.Controllers
                              responsePaymentId
                              );
 
-            EnterprisePaymentDbLogHelpers.LogGetSentExists(
-                            _logger,
-                           "ENVIADO_TIBCO",
-                           "MULTIPAGOS_SERVER2SERVER",
-                           responsePaymentId,
-                           sentExists
-                           );
-
             var endPayment = _endPaymentRepository.GetEndPaymentByResponsePaymentId(responsePaymentId);
-
-            EnterprisePaymentDbLogHelpers.LogGetEndPayment(
-                      _logger,
-                      responsePaymentId,
-                      endPayment
-                      );
 
             if (sentExists != true)
             {
-                    string resultMessage = await _responseBankRequestTypeTibcoRepository.SendEndPaymentToTibco(endPayment,_logger);
+                    string resultMessage = await _responseBankRequestTypeTibcoRepository.SendEndPaymentToTibco(endPayment);
 
-                    
                     if(resultMessage == "OK")
                     {
                     _endPaymentRepository.UpdateEndPaymentSentStatus(endPayment.EndPaymentId, "ENVIADO_TIBCO");
-
-                    EnterprisePaymentDbLogHelpers.LogUpdateEndPaymentSentStatus(
-                             _logger,
-                            endPayment.EndPaymentId,
-                            "ENVIADO_TIBCO"
-                           );
-
-                }
+                    }
             }
 
         }

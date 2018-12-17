@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using EPWebAPI.Models;
-using System.Text;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
+using EPWebAPI.Interfaces;
 
 namespace EPWebAPI.Helpers
 {
@@ -44,8 +39,10 @@ namespace EPWebAPI.Helpers
             return (sbinary).ToLower();
         }
 
-      public static Boolean ValidateMultipagosHash(MultiPagosResponsePaymentDTO multipagosResponse,IConfiguration config)
+      public static Boolean ValidateMultipagosHash(MultiPagosResponsePaymentDTO multipagosResponse,IConfiguration config , IDbLoggerRepository loggerRepo)
         {
+
+            bool result;
 
             var environmentMpSk = Environment.GetEnvironmentVariable("MpSk", EnvironmentVariableTarget.Machine);
 
@@ -58,16 +55,14 @@ namespace EPWebAPI.Helpers
             string MpSk = _mpsk;
 
             var rawData = multipagosResponse.mp_order + multipagosResponse.mp_reference + multipagosResponse.mp_amount + multipagosResponse.mp_authorization;
-            var myHash = ComputeSha256Hash(rawData, MpSk);
+            var generatedHash = ComputeSha256Hash(rawData, MpSk);
 
-            if(myHash == multipagosResponse.mp_signature)
-            {
 
-                return true;
+            result = (generatedHash == multipagosResponse.mp_signature) ? true : false;
 
-            }
+            loggerRepo.LogHashValidationToDb(multipagosResponse, rawData, generatedHash, (generatedHash == multipagosResponse.mp_signature) ? "HASH_VALIDO" : "HASH_INVALIDO");
 
-            return false;
+            return result;
         }
 
         public static ResponsePaymentDTO GenerateResponsePaymentDTO(MultiPagosResponsePaymentDTO multiPagosResponse,int requestPaymentId, string hashStatus)
