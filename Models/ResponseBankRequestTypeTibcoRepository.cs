@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using EPWebAPI.Interfaces;
 using TibcoServiceReference;
-using Serilog;
-using EPWebAPI.Helpers;
 
 namespace EPWebAPI.Models
 {
@@ -27,7 +25,9 @@ namespace EPWebAPI.Models
                 TipoTarjeta = endPayment.CcType,
                 BancoEmisor = endPayment.IssuingBank,
                 SeviceRequest = endPayment.ServiceRequest,
-                BillingAccount = endPayment.BillingAccount
+                BillingAccount = endPayment.BillingAccount,
+                Monto =  endPayment.Amount.ToString(),
+                TarjetaHabiente = endPayment.CardHolderName
             };
 
 

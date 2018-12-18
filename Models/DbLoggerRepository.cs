@@ -1,6 +1,5 @@
 ﻿using EPWebAPI.Interfaces;
 using Serilog;
-using System;
 using TibcoServiceReference;
 
 
@@ -62,17 +61,17 @@ namespace EPWebAPI.Models
         {
             get
             {
-                return "Hash Validation Process: mp_order: {@mp_order} " +
-                                                "mp_reference: {@mp_reference} " +
-                                                "mp_amount: {@mp_amount} " +
-                                                "mp_authorization: {@mp_authorization} " +
-                                                "GeneratedString:{@concatenation} " +
-                                                "GeneratedHash: {@generatedHash} " +
-                                                "MultipagosHash:{@mp_signature} " +
-                                                "result: {@result} " +
-                                                "PaymentStage:{@ResponsePaymentStage} " +
-                                                "ComunicationStep:{@LogComunicationStep} " +
-                                                "Application:{@Application}";
+                return @"Hash Validation Process: mp_order: {@mp_order} 
+                                                 mp_reference: {@mp_reference} 
+                                                 mp_amount: {@mp_amount} 
+                                                 mp_authorization: {@mp_authorization} 
+                                                 GeneratedString:{@concatenation} 
+                                                 GeneratedHash: {@generatedHash} 
+                                                 MultipagosHash:{@mp_signature} 
+                                                 result: {@result} 
+                                                 PaymentStage:{@ResponsePaymentStage} 
+                                                 ComunicationStep:{@LogComunicationStep} 
+                                                 Application:{@Application}";
             }
         }
 
@@ -80,24 +79,24 @@ namespace EPWebAPI.Models
         {
             get
             {
-                return "Data from Multipagos: amount {@mp_amount}" +
-                                      "authorization: {@mp_authorization}" +
-                                      "bankname: {@mp_bankname}" +
-                                      "cardholdername: {@mp_cardholdername} " +
-                                      "date: {@mp_date} " +
-                                      "folio: {@mp_folio} " +
-                                      "order: {@mp_order} " +
-                                      "pan: {@mp_pan} " +
-                                      "paymentmethod: {@mp_paymentmethod} " +
-                                      "reference: {@mp_reference} " +
-                                      "response:{@mp_response} " +
-                                      "responsemsg: {@mp_responsemsg} " +
-                                      "saleid: {@mp_saleid} " +
-                                      "token:{@mp_sbtoken} " +
-                                      "signature:{@mp_signature} " +
-                                      "PaymentStage:{@ResponsePaymentStage} " +
-                                      "ComunicationStep:{@LogComunicationStep} " +
-                                      "Application:{@Application}";
+                return @"Data from Multipagos: amount {@mp_amount} 
+                                       authorization: {@mp_authorization} 
+                                       bankname: {@mp_bankname} 
+                                       cardholdername: {@mp_cardholdername} 
+                                       date: {@mp_date} 
+                                       folio: {@mp_folio} 
+                                       order: {@mp_order} 
+                                       pan: {@mp_pan} 
+                                       paymentmethod: {@mp_paymentmethod} 
+                                       reference: {@mp_reference} 
+                                       response:{@mp_response} 
+                                       responsemsg: {@mp_responsemsg} 
+                                       saleid: {@mp_saleid} 
+                                       token:{@mp_sbtoken} 
+                                       signature:{@mp_signature} 
+                                       PaymentStage:{@ResponsePaymentStage} 
+                                       ComunicationStep:{@LogComunicationStep} 
+                                       Application:{@Application}";
             }
         }
 
@@ -105,19 +104,21 @@ namespace EPWebAPI.Models
         {
             get
             {
-                return "Data that has sent to Tibco: UltimosCuatroDigitos: {@UltimosCuatroDigitos} " +
-                                                    "Token: {@Token} " +
-                                                    "RespuestaBanco: {@RespuestaBanco} " +
-                                                    "NumeroTransaccion: {@NumeroTransaccion} " +
-                                                    "TipoTarjeta:{@TipoTarjeta} " +
-                                                    "BancoEmisor: {@BancoEmisor} " +
-                                                    "SeviceRequest:{@SeviceRequest} " +
-                                                    "BillingAccount: {@BillingAccount} " +
-                                                    "Response From Tibco: ErrorMessage: {@ErrorMessage} " +
-                                                    "ErrorCode:{@ErrorCode}" +
-                                                    "PaymentStage:{@EndPaymentStage} " +
-                                                    "ComunicationStep:{@LogComunicationStep} " +
-                                                    "Application:{@Application}";
+                return @"Data that has sent to Tibco: UltimosCuatroDigitos: {@UltimosCuatroDigitos} 
+                                                     Token: {@Token} 
+                                                     RespuestaBanco: {@RespuestaBanco} 
+                                                     NumeroTransaccion: {@NumeroTransaccion} 
+                                                     TipoTarjeta:{@TipoTarjeta} 
+                                                     BancoEmisor: {@BancoEmisor} 
+                                                     SeviceRequest:{@SeviceRequest} 
+                                                     BillingAccount: {@BillingAccount} 
+                                                     Amount: {@Amount} 
+                                                     CardHolderName: {@CardHolderName} 
+                                                     Response From Tibco: ErrorMessage: {@ErrorMessage} 
+                                                     ErrorCode:{@ErrorCode} 
+                                                     PaymentStage:{@EndPaymentStage} 
+                                                     ComunicationStep:{@LogComunicationStep} 
+                                                     Application:{@Application}";
             }
         }
 
@@ -125,11 +126,11 @@ namespace EPWebAPI.Models
         {
             get
             {
-                return "Updated Endpayment: EndPaymentId: {@endPaymentId} " +
-                                           "EndPaymentSentStatus: {@endPaymentSentStatus}" +
-                                           "PaymentStage:{@EndPaymentStage} " +
-                                           "ComunicationStep:{@LogComunicationStep} " +
-                                           "Application:{@Application}";
+                return @"Updated Endpayment: EndPaymentId: {@endPaymentId} 
+                                            EndPaymentSentStatus: {@endPaymentSentStatus}
+                                            PaymentStage:{@EndPaymentStage}  
+                                            ComunicationStep:{@LogComunicationStep} 
+                                            Application:{@Application}";
             }
         }
 
@@ -137,13 +138,13 @@ namespace EPWebAPI.Models
         {
             get
             {
-                return "Sent to Tibco from Server2Server Search: EndPaymentStatusDescription: {@endPaymentStatusDescription} " +
-                                                                "ResponsePaymentType: {@responsePaymentType} " +
-                                                                "ResponsePaymentId: {@responsePaymentId} " +
-                                                                "ServerHasSentData: {@serverHasSentData}" +
-                                                                "PaymentStage:{@EndPaymentStage} " +
-                                                                "ComunicationStep:{@LogComunicationStep} " +
-                                                                "Application:{@Application}";
+                return @"Sent to Tibco from Server2Server Search: EndPaymentStatusDescription: {@endPaymentStatusDescription} 
+                                                                 ResponsePaymentType: {@responsePaymentType} 
+                                                                 ResponsePaymentId: {@responsePaymentId} 
+                                                                 ServerHasSentData: {@serverHasSentData} 
+                                                                 PaymentStage:{@EndPaymentStage}  
+                                                                 ComunicationStep:{@LogComunicationStep} 
+                                                                 Application:{@Application}";
             }
         }
 
@@ -151,14 +152,14 @@ namespace EPWebAPI.Models
         {
             get
             {
-                return "LastRequestPaymentId Search: mp_amount: {@mp_amount} " +
-                                                    "mp_order: {@mp_order} " +
-                                                    "mp_reference: {@mp_reference} " +
-                                                    "StatusPayment: {@statusPayment} " +
-                                                    "Obtained Request Payment Id : {@requestPaymentId}" +
-                                                    "PaymentStage:{@ResponsePaymentStage} " +
-                                                    "ComunicationStep:{@LogComunicationStep} " +
-                                                    "Application:{@Application}";
+                return @"LastRequestPaymentId Search: mp_amount: {@mp_amount} 
+                                                     mp_order: {@mp_order} 
+                                                     mp_reference: {@mp_reference} 
+                                                     StatusPayment: {@statusPayment} 
+                                                     Obtained Request Payment Id : {@requestPaymentId} 
+                                                     PaymentStage:{@ResponsePaymentStage} 
+                                                     ComunicationStep:{@LogComunicationStep} 
+                                                     Application:{@Application}";
             }
         }
 
@@ -166,21 +167,24 @@ namespace EPWebAPI.Models
         {
             get
             {
-                return "EndPayment Search: ResponsePaymentId: {@responsePaymentId} " +
-                        "Searched EndPayment: EndPaymentId: {@EndPaymentId} " +
-                                             "CcLastFour: {@CcLastFour} " +
-                                             "Token: {@Token} " +
-                                             "ResponseCode: {@ResponseCode} " +
-                                             "ResponseMessage: {@ResponseMessage} " +
-                                             "TransactionNumber: {@TransactionNumber} " +
-                                             "CcType: {@CcType} " +
-                                             "IssuingBank: {@IssuingBank} " +
-                                             "ServiceRequest: {@ServiceRequest} " +
-                                             "BillingAccount: {@BillingAccount} " +
-                                             "PaymentReference: {@PaymentReference} " +
-                                             "PaymentStage:{@EndPaymentStage} " +
-                                             "ComunicationStep:{@LogComunicationStep} " +
-                                             "Application:{@Application}";
+                return @"EndPayment Search: ResponsePaymentId: {@responsePaymentId} 
+                        Searched EndPayment: EndPaymentId: {@EndPaymentId} 
+                                             CcLastFour: {@CcLastFour} 
+                                             CcBin: {@CcBin}
+                                             Token: {@Token} 
+                                             ResponseCode: {@ResponseCode}  
+                                             ResponseMessage: {@ResponseMessage} 
+                                             TransactionNumber: {@TransactionNumber} 
+                                             CcType: {@CcType} 
+                                             IssuingBank: {@IssuingBank} 
+                                             Amount: {@Amount}
+                                             CardHolderName: {@CardHolderName}
+                                             ServiceRequest: {@ServiceRequest} 
+                                             BillingAccount: {@BillingAccount} 
+                                             PaymentReference: {@PaymentReference} 
+                                             PaymentStage:{@EndPaymentStage} 
+                                             ComunicationStep:{@LogComunicationStep} 
+                                             Application:{@Application}";
             }
         }
 
@@ -188,28 +192,28 @@ namespace EPWebAPI.Models
         {
             get
             {
-                return "ResponsePaymentDTO Data: MpAmount:{@MpAmount} " +
-                                                "MpAuthorization: {@MpAuthorization} " +
-                                                "MpBankName: {@MpBankName} " +
-                                                "MpCardHolderName: {@MpCardHolderName} " +
-                                                "Date: {@MpDate} " +
-                                                "Folio: {@MpFolio} " +
-                                                "Order: {@MpOrder} " +
-                                                "Pan: {@MpPan} " +
-                                                "PaymentMethod: {@MpPaymentMethod} " +
-                                                "Reference: {@MpReference} " +
-                                                "Response: {@MpResponse} " +
-                                                "ResponseMessage: {@MpResponseMsg} " +
-                                                "SaleId: {@MpSaleId} " +
-                                                "Token: {@MpSbToken} " +
-                                                "Signature:{@MpSignature} " +
-                                                "PaymentRequestId: {@PaymentRequestId}  " +
-                                                "ResponsePaymentHashStatusDescription: {@ResponsePaymentHashStatusDescription} " +
-                                                "ResponsePaymentTypeDescription: {@ResponsePaymentTypeDescription} " +
-                                                "GeneratedResponsePaymentId: {@responsePaymentId} " +
-                                                "PaymentStage:{@ResponsePaymentStage} " +
-                                                "ComunicationStep:{@LogComunicationStep} " +
-                                                "Application:{@Application}";
+                return @"ResponsePaymentDTO Data: MpAmount:{@MpAmount} 
+                                                 MpAuthorization: {@MpAuthorization} 
+                                                 MpBankName: {@MpBankName} 
+                                                 MpCardHolderName: {@MpCardHolderName} 
+                                                 Date: {@MpDate} 
+                                                 Folio: {@MpFolio} 
+                                                 Order: {@MpOrder} 
+                                                 Pan: {@MpPan} 
+                                                 PaymentMethod: {@MpPaymentMethod} 
+                                                 Reference: {@MpReference} 
+                                                 Response: {@MpResponse} 
+                                                 ResponseMessage: {@MpResponseMsg} 
+                                                 SaleId: {@MpSaleId} 
+                                                 Token: {@MpSbToken} 
+                                                 Signature:{@MpSignature} 
+                                                 PaymentRequestId: {@PaymentRequestId}  
+                                                 ResponsePaymentHashStatusDescription: {@ResponsePaymentHashStatusDescription} 
+                                                 ResponsePaymentTypeDescription: {@ResponsePaymentTypeDescription} 
+                                                 GeneratedResponsePaymentId: {@responsePaymentId} 
+                                                 PaymentStage:{@ResponsePaymentStage} 
+                                                 ComunicationStep:{@LogComunicationStep} 
+                                                 Application:{@Application}";
             }
         }
 
@@ -251,12 +255,15 @@ namespace EPWebAPI.Models
                 responsePaymentId,
                 endPayment.EndPaymentId,
                 endPayment.CcLastFour,
+                endPayment.CcBin,
                 endPayment.Token,
                 endPayment.ResponseCode,
                 endPayment.ResponseMessage,
                 endPayment.TransactionNumber,
                 endPayment.CcType,
                 endPayment.IssuingBank,
+                endPayment.Amount,
+                endPayment.CardHolderName,
                 endPayment.ServiceRequest,
                 endPayment.BillingAccount,
                 endPayment.PaymentReference,
@@ -348,6 +355,8 @@ namespace EPWebAPI.Models
                 requestToTibco.BancoEmisor,
                 requestToTibco.SeviceRequest,
                 requestToTibco.BillingAccount,
+                requestToTibco.Monto,
+                requestToTibco.TarjetaHabiente,
                 responseFromTibco.ResponseBankResponse1.ErrorMessage,
                 responseFromTibco.ResponseBankResponse1.ErrorCode,
                 EndPaymentStage,

@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using EPWebAPI.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Dapper;
 using EPWebAPI.Utilities;
 
 namespace EPWebAPI.Models
@@ -36,7 +30,7 @@ namespace EPWebAPI.Models
                                        : _config["MpSk"];
 
 
-                string rawString =  hash.paymentOrder + hash.paymentReference  + hash.paymentAmount;
+                 string rawString =  hash.paymentOrder + hash.paymentReference  + hash.paymentAmount;
                  string MpSk = _mpsk;
 
                  hashString = StaticRequestEnterprisePayment.ComputeSha256Hash(rawString,MpSk);

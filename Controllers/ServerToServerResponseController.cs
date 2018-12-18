@@ -81,10 +81,10 @@ namespace EPWebAPI.Controllers
             {
                     string resultMessage = await _responseBankRequestTypeTibcoRepository.SendEndPaymentToTibco(endPayment);
 
-                    if(resultMessage == "OK")
-                    {
+                if (resultMessage == "OK")
+                {
                     _endPaymentRepository.UpdateEndPaymentSentStatus(endPayment.EndPaymentId, "ENVIADO_TIBCO");
-                    }
+                }
             }
 
         }

@@ -10,6 +10,7 @@ namespace EPWebAPI.Extensions
     this IServiceCollection services)
         {
             services.AddTransient<IDbConnectionRepository, DbConnectionRepository>();
+            services.AddTransient<IDbLoggerRepository, DbLoggerRepository>();
             services.AddTransient<IRequestPaymentRepository, RequestPaymentRepository>();
             services.AddTransient<ILogPaymentRepository, LogPaymentRepository>();
             services.AddTransient<IEndPaymentRepository, EndPaymentRepository>();
