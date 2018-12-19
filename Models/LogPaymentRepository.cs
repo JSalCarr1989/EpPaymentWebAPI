@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using EPWebAPI.Interfaces;
+using EPWebAPI.Utilities;
 using Dapper;
 using System;
 
@@ -35,7 +36,7 @@ namespace EPWebAPI.Models
             {
                 _conn.Open();
               var result  = await _conn.QueryAsync<LogPayment>(
-                            "SP_MONITOR_EP_GET_LOGPAYMENT_BY_SR_PR",
+                            StaticLogPaymentProperties.SP_MONITOR_EP_GET_LOGPAYMENT_BY_SR_PR,
                             new {
                                 SERVICE_REQUEST = serviceRequest,
                                 PAYMENT_REFERENCE = paymentReference
@@ -62,15 +63,15 @@ namespace EPWebAPI.Models
                  try 
                  {
                     var parameters = new DynamicParameters();
-                    parameters.Add("@PAYMENT_REQUEST_AMOUNT", amount);
-                    parameters.Add("@SERVICE_REQUEST", serviceRequest);
-                    parameters.Add("@PAYMENT_REFERENCE", paymentReference);
-                    parameters.Add("@STATUS_PAYMENT", StatusPayment);
+                    parameters.Add(StaticLogPaymentProperties.PAYMENT_REQUEST_AMOUNT, amount);
+                    parameters.Add(StaticLogPaymentProperties.SERVICE_REQUEST, serviceRequest);
+                    parameters.Add(StaticLogPaymentProperties.PAYMENT_REFERENCE, paymentReference);
+                    parameters.Add(StaticLogPaymentProperties.STATUS_PAYMENT, StatusPayment);
 
                     _conn.Open();
 
                     result = _conn.QueryFirstOrDefault<LogPayment>(
-                        "GET_LAST_REQUESTPAYMENT_ID",
+                        StaticLogPaymentProperties.GET_LAST_REQUESTPAYMENT_ID,
                         parameters, 
                         commandType: CommandType.StoredProcedure
                         );

@@ -1,5 +1,6 @@
 using System.Data;
 using EPWebAPI.Interfaces;
+using EPWebAPI.Utilities;
 using Dapper;
 
 namespace EPWebAPI.Models
@@ -32,18 +33,18 @@ namespace EPWebAPI.Models
                 var parameters = new DynamicParameters();
 
 
-                parameters.Add("@END_PAYMENT_STATUS_DESCRIPTION", endPaymentStatusDescription);
-                parameters.Add("@RESPONSE_PAYMENT_TYPE", responsePaymentType);
-                parameters.Add("@RESPONSE_PAYMENT_ID", responsePaymentId);
-                parameters.Add("@SENT_NUM",
+                parameters.Add(StaticSentToTibcoRepositoryProperties.END_PAYMENT_STATUS_DESCRIPTION, endPaymentStatusDescription);
+                parameters.Add(StaticSentToTibcoRepositoryProperties.RESPONSE_PAYMENT_TYPE, responsePaymentType);
+                parameters.Add(StaticSentToTibcoRepositoryProperties.RESPONSE_PAYMENT_ID, responsePaymentId);
+                parameters.Add(StaticSentToTibcoRepositoryProperties.SENT_NUM,
     dbType: DbType.Int32,
     direction: ParameterDirection.Output);
 
                 _conn.Open();
 
-                _conn.Query("SP_GET_SENT_TO_TIBCO", parameters, commandType: CommandType.StoredProcedure);
+                _conn.Query(StaticSentToTibcoRepositoryProperties.SP_GET_SENT_TO_TIBCO, parameters, commandType: CommandType.StoredProcedure);
 
-                sentToTibcoCount = parameters.Get<int>("SENT_NUM");
+                sentToTibcoCount = parameters.Get<int>(StaticSentToTibcoRepositoryProperties.SENT_NUM_OUTPUT_SEARCH);
 
                 sentToTibco = (sentToTibcoCount > 0) ? true : false;
 

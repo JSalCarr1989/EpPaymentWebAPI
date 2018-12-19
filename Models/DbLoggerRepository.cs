@@ -25,43 +25,15 @@ namespace EPWebAPI.Models
             _logger = logger;
         }
 
-        public static string ResponsePaymentStage
-        {
-            get
-            {
-                return "ResponsePayment";
-            }
-        }
+        public static string ResponsePaymentStage => "ResponsePayment";
 
-        public static string EndPaymentStage
-        {
-            get
-            {
-                return "EndPayment";
-            }
-        }
+        public static string EndPaymentStage => "EndPayment";
 
-        public static string ComunicationStep
-        {
-            get
-            {
-                return "FROM MULTIPAGOS TO .NET CORE MVC WEB APP POST RESPONSE";
-            }
-        }
+        public static string ComunicationStep => "FROM MULTIPAGOS TO .NET CORE MVC WEB APP POST RESPONSE";
 
-        public static string Application
-        {
-            get
-            {
-                return ".NET CORE MVC WEB APP";
-            }
-        }
+        public static string Application => ".NET CORE MVC WEB APP";
 
-        public static string HashValidationMessageTemplate
-        {
-            get
-            {
-                return @"Hash Validation Process: mp_order: {@mp_order} 
+        public static string HashValidationMessageTemplate => @"Hash Validation Process: mp_order: {@mp_order} 
                                                  mp_reference: {@mp_reference} 
                                                  mp_amount: {@mp_amount} 
                                                  mp_authorization: {@mp_authorization} 
@@ -72,14 +44,8 @@ namespace EPWebAPI.Models
                                                  PaymentStage:{@ResponsePaymentStage} 
                                                  ComunicationStep:{@LogComunicationStep} 
                                                  Application:{@Application}";
-            }
-        }
 
-        public static string ResponseDataMessageTemplate
-        {
-            get
-            {
-                return @"Data from Multipagos: amount {@mp_amount} 
+        public static string ResponseDataMessageTemplate => @"Data from Multipagos: amount {@mp_amount} 
                                        authorization: {@mp_authorization} 
                                        bankname: {@mp_bankname} 
                                        cardholdername: {@mp_cardholdername} 
@@ -97,14 +63,8 @@ namespace EPWebAPI.Models
                                        PaymentStage:{@ResponsePaymentStage} 
                                        ComunicationStep:{@LogComunicationStep} 
                                        Application:{@Application}";
-            }
-        }
 
-        public static string SendEndPaymentToTibcoMessageTemplate
-        {
-            get
-            {
-                return @"Data that has sent to Tibco: UltimosCuatroDigitos: {@UltimosCuatroDigitos} 
+        public static string SendEndPaymentToTibcoMessageTemplate => @"Data that has sent to Tibco: UltimosCuatroDigitos: {@UltimosCuatroDigitos} 
                                                      Token: {@Token} 
                                                      RespuestaBanco: {@RespuestaBanco} 
                                                      NumeroTransaccion: {@NumeroTransaccion} 
@@ -119,40 +79,22 @@ namespace EPWebAPI.Models
                                                      PaymentStage:{@EndPaymentStage} 
                                                      ComunicationStep:{@LogComunicationStep} 
                                                      Application:{@Application}";
-            }
-        }
 
-        public static string UpdateEndPaymentSentStatusMessageTemplate
-        {
-            get
-            {
-                return @"Updated Endpayment: EndPaymentId: {@endPaymentId} 
+        public static string UpdateEndPaymentSentStatusMessageTemplate => @"Updated Endpayment: EndPaymentId: {@endPaymentId} 
                                             EndPaymentSentStatus: {@endPaymentSentStatus}
                                             PaymentStage:{@EndPaymentStage}  
                                             ComunicationStep:{@LogComunicationStep} 
                                             Application:{@Application}";
-            }
-        }
 
-        public static string GetSentExistsMessageTemplate
-        {
-            get
-            {
-                return @"Sent to Tibco from Server2Server Search: EndPaymentStatusDescription: {@endPaymentStatusDescription} 
+        public static string GetSentExistsMessageTemplate => @"Sent to Tibco from Server2Server Search: EndPaymentStatusDescription: {@endPaymentStatusDescription} 
                                                                  ResponsePaymentType: {@responsePaymentType} 
                                                                  ResponsePaymentId: {@responsePaymentId} 
                                                                  ServerHasSentData: {@serverHasSentData} 
                                                                  PaymentStage:{@EndPaymentStage}  
                                                                  ComunicationStep:{@LogComunicationStep} 
                                                                  Application:{@Application}";
-            }
-        }
 
-        public static string GetLastRequestPaymentIdMessageTemplate
-        {
-            get
-            {
-                return @"LastRequestPaymentId Search: mp_amount: {@mp_amount} 
+        public static string GetLastRequestPaymentIdMessageTemplate => @"LastRequestPaymentId Search: mp_amount: {@mp_amount} 
                                                      mp_order: {@mp_order} 
                                                      mp_reference: {@mp_reference} 
                                                      StatusPayment: {@statusPayment} 
@@ -160,14 +102,8 @@ namespace EPWebAPI.Models
                                                      PaymentStage:{@ResponsePaymentStage} 
                                                      ComunicationStep:{@LogComunicationStep} 
                                                      Application:{@Application}";
-            }
-        }
 
-        public static string GetEndPaymentMessageTemplate
-        {
-            get
-            {
-                return @"EndPayment Search: ResponsePaymentId: {@responsePaymentId} 
+        public static string GetEndPaymentMessageTemplate => @"EndPayment Search: ResponsePaymentId: {@responsePaymentId} 
                         Searched EndPayment: EndPaymentId: {@EndPaymentId} 
                                              CcLastFour: {@CcLastFour} 
                                              CcBin: {@CcBin}
@@ -185,14 +121,8 @@ namespace EPWebAPI.Models
                                              PaymentStage:{@EndPaymentStage} 
                                              ComunicationStep:{@LogComunicationStep} 
                                              Application:{@Application}";
-            }
-        }
 
-        public static string CreateResponsePaymentMessageTemplate
-        {
-            get
-            {
-                return @"ResponsePaymentDTO Data: MpAmount:{@MpAmount} 
+        public static string CreateResponsePaymentMessageTemplate => @"ResponsePaymentDTO Data: MpAmount:{@MpAmount} 
                                                  MpAuthorization: {@MpAuthorization} 
                                                  MpBankName: {@MpBankName} 
                                                  MpCardHolderName: {@MpCardHolderName} 
@@ -214,8 +144,6 @@ namespace EPWebAPI.Models
                                                  PaymentStage:{@ResponsePaymentStage} 
                                                  ComunicationStep:{@LogComunicationStep} 
                                                  Application:{@Application}";
-            }
-        }
 
 
 

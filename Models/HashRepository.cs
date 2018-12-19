@@ -33,7 +33,7 @@ namespace EPWebAPI.Models
                  string rawString =  hash.paymentOrder + hash.paymentReference  + hash.paymentAmount;
                  string MpSk = _mpsk;
 
-                 hashString = StaticRequestEnterprisePayment.ComputeSha256Hash(rawString,MpSk);
+                 hashString = StaticRequestEP.ComputeSha256Hash(rawString,MpSk);
 
                  Hash createdHash = new Hash 
                  {

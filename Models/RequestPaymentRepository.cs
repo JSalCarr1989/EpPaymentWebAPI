@@ -1,15 +1,11 @@
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Threading.Tasks;
 using EPWebAPI.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Dapper;
 using System;
 using Serilog;
-using Serilog.Events;
 using Serilog.Formatting.Compact;
 using EPWebAPI.Utilities;
 
@@ -46,36 +42,36 @@ namespace EPWebAPI.Models {
         {
             int id;
             IDbConnection conn = Connection;
-            requestPayment.MpPaymentDatetime = DateTime.Now.ToString(StaticRequestEnterprisePayment.DATETIMEFORMAT);
+            requestPayment.MpPaymentDatetime = DateTime.Now.ToString(StaticRequestEP.DATETIMEFORMAT);
             try 
             {
             using(conn)
             {
                 var parameters = new DynamicParameters();
 
-                parameters.Add(StaticRequestEnterprisePayment.MP_ACCOUNT,requestPayment.MpAccount);
-                parameters.Add(StaticRequestEnterprisePayment.MP_PRODUCT,requestPayment.MpProduct);
-                parameters.Add(StaticRequestEnterprisePayment.MP_ORDER,requestPayment.MpOrder);
-                parameters.Add(StaticRequestEnterprisePayment.MP_REFERENCE,requestPayment.MpReference);
-                parameters.Add(StaticRequestEnterprisePayment.MP_NODE,requestPayment.MpNode);
-                parameters.Add(StaticRequestEnterprisePayment.MP_CONCEPT,requestPayment.MpConcept);
-                parameters.Add(StaticRequestEnterprisePayment.MP_AMOUNT,requestPayment.MpAmount);
-                parameters.Add(StaticRequestEnterprisePayment.MP_CUSTOMER_NAME,requestPayment.MpCustomerName);
-                parameters.Add(StaticRequestEnterprisePayment.MP_CURRENCY,requestPayment.MpCurrency);
-                parameters.Add(StaticRequestEnterprisePayment.MP_SIGNATURE,requestPayment.MpSignature);
-                parameters.Add(StaticRequestEnterprisePayment.MP_URL_SUCCESS,requestPayment.MpUrlSuccess);
-                parameters.Add(StaticRequestEnterprisePayment.MP_URL_FAILURE,requestPayment.MpUrlFailure);
-                parameters.Add(StaticRequestEnterprisePayment.MP_REGISTER_SB,requestPayment.MpRegisterSb);
-                parameters.Add(StaticRequestEnterprisePayment.MP_PAYMENTDATETIME,requestPayment.MpPaymentDatetime);
-                parameters.Add(StaticRequestEnterprisePayment.BEGIN_PAYMENT_ID,requestPayment.BeginPaymentId);
-                parameters.Add(StaticRequestEnterprisePayment.REQUEST_PAYMENT_ID, 
+                parameters.Add(StaticRequestEP.MP_ACCOUNT,requestPayment.MpAccount);
+                parameters.Add(StaticRequestEP.MP_PRODUCT,requestPayment.MpProduct);
+                parameters.Add(StaticRequestEP.MP_ORDER,requestPayment.MpOrder);
+                parameters.Add(StaticRequestEP.MP_REFERENCE,requestPayment.MpReference);
+                parameters.Add(StaticRequestEP.MP_NODE,requestPayment.MpNode);
+                parameters.Add(StaticRequestEP.MP_CONCEPT,requestPayment.MpConcept);
+                parameters.Add(StaticRequestEP.MP_AMOUNT,requestPayment.MpAmount);
+                parameters.Add(StaticRequestEP.MP_CUSTOMER_NAME,requestPayment.MpCustomerName);
+                parameters.Add(StaticRequestEP.MP_CURRENCY,requestPayment.MpCurrency);
+                parameters.Add(StaticRequestEP.MP_SIGNATURE,requestPayment.MpSignature);
+                parameters.Add(StaticRequestEP.MP_URL_SUCCESS,requestPayment.MpUrlSuccess);
+                parameters.Add(StaticRequestEP.MP_URL_FAILURE,requestPayment.MpUrlFailure);
+                parameters.Add(StaticRequestEP.MP_REGISTER_SB,requestPayment.MpRegisterSb);
+                parameters.Add(StaticRequestEP.MP_PAYMENTDATETIME,requestPayment.MpPaymentDatetime);
+                parameters.Add(StaticRequestEP.BEGIN_PAYMENT_ID,requestPayment.BeginPaymentId);
+                parameters.Add(StaticRequestEP.REQUEST_PAYMENT_ID, 
                                     dbType: DbType.Int32, 
                                     direction: ParameterDirection.Output);
 
                 conn.Open();
 
                 _logger.Information( 
-                                     StaticRequestEnterprisePayment.LogTemplateBeforeInsert,
+                                     StaticRequestEP.LogTemplateBeforeInsert,
                                      requestPayment.MpAccount,
                                      requestPayment.MpProduct,
                                      requestPayment.MpOrder,
@@ -90,19 +86,19 @@ namespace EPWebAPI.Models {
                                      requestPayment.MpUrlFailure,
                                      requestPayment.MpRegisterSb,
                                      requestPayment.MpPaymentDatetime,
-                                     StaticRequestEnterprisePayment.PaymentStage,
-                                     StaticRequestEnterprisePayment.ComunicationStep
+                                     StaticRequestEP.PaymentStage,
+                                     StaticRequestEP.ComunicationStep
                                    );
 
                 await conn.QueryAsync(
-                    StaticRequestEnterprisePayment.SP_CREATE_REQUEST_ENTERPRISE_PAYMENT,
+                    StaticRequestEP.SP_CREATE_REQUEST_ENTERPRISE_PAYMENT,
                     parameters,
                     commandType:CommandType.StoredProcedure);
 
-                id = parameters.Get<int>(StaticRequestEnterprisePayment.REQUEST_PAYMENT_ID_OUTPUT_SEARCH);
+                id = parameters.Get<int>(StaticRequestEP.REQUEST_PAYMENT_ID_OUTPUT_SEARCH);
 
                 _logger.Information(
-                            StaticRequestEnterprisePayment.LogTemplateAfterInsert,
+                            StaticRequestEP.LogTemplateAfterInsert,
                             id,
                             requestPayment.MpOrder,
                             requestPayment.MpReference
@@ -129,7 +125,7 @@ namespace EPWebAPI.Models {
             using(IDbConnection conn = Connection)
             {
                 conn.Open();
-                var result = await conn.QueryFirstOrDefaultAsync<RequestPayment>(StaticRequestEnterprisePayment.SP_EP_GET_REQUESTPAYMENT_BY_ID,new {RequestPaymentId = id},commandType:CommandType.StoredProcedure);
+                var result = await conn.QueryFirstOrDefaultAsync<RequestPayment>(StaticRequestEP.SP_EP_GET_REQUESTPAYMENT_BY_ID,new {RequestPaymentId = id},commandType:CommandType.StoredProcedure);
                 return result;
             }
         }

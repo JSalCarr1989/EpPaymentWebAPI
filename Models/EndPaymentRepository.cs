@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using EPWebAPI.Interfaces;
+using EPWebAPI.Utilities;
 using Dapper;
 
 namespace EPWebAPI.Models
@@ -26,7 +27,7 @@ namespace EPWebAPI.Models
                 _conn.Open();
 
                 var result = _conn.QueryFirstOrDefault<EndPayment>(
-                    "SP_EP_GET_ENDPAYMENT_BY_RESPONSEPAYMENT_ID", 
+                    StaticEndPaymentProperties.SP_EP_GET_ENDPAYMENT_BY_RESPONSEPAYMENT_ID, 
                     new { RESPONSEPAYMENT_ID = responsePaymentId },
                     commandType: CommandType.StoredProcedure
                     );
@@ -44,12 +45,12 @@ namespace EPWebAPI.Models
               
                var parameters = new DynamicParameters();
 
-               parameters.Add("@ENDPAYMENT_ID", endPaymentId);
-               parameters.Add("@ENDPAYMENT_SENT_STATUS", endPaymentSentStatus);
+               parameters.Add(StaticEndPaymentProperties.ENDPAYMENT_ID, endPaymentId);
+               parameters.Add(StaticEndPaymentProperties.ENDPAYMENT_SENT_STATUS, endPaymentSentStatus);
 
                 _conn.Open();
 
-                _conn.Query("UPDATE_ENDPAYMENT_SENT_STATUS",parameters,commandType: CommandType.StoredProcedure);
+                _conn.Query(StaticEndPaymentProperties.UPDATE_ENDPAYMENT_SENT_STATUS, parameters,commandType: CommandType.StoredProcedure);
 
                 _dbLoggerRepository.LogUpdateEndPaymentSentStatus(endPaymentId, endPaymentSentStatus);
             }
@@ -61,12 +62,12 @@ namespace EPWebAPI.Models
             {
                 _conn.Open();
                 var result = _conn.QueryFirstOrDefault<String>(
-                              "GET_ENDPAYMENT_SENT_STATUS_BY_ID", 
+                              StaticEndPaymentProperties.GET_ENDPAYMENT_SENT_STATUS_BY_ID, 
                               new { ENDPAYMENT_ID = endPaymentId }, 
                               commandType: CommandType.StoredProcedure
                               );
 
-                return (result == "ENVIADO_TIBCO") ? true : false;
+                return (result == StaticEndPaymentProperties.ENVIADO_TIBCO) ? true : false;
             }
         }
     }
