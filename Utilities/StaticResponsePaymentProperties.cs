@@ -44,5 +44,19 @@
 
         public static string RESPONSE_PAYMENT_ID_OUTPUT_SEARCH => "RESPONSE_PAYMENT_ID";
 
+        public static string VALID_HASH => "HASH_VALIDO";
+
+        public static string INVALID_HASH => "INVALID_HASH";
+
+        public static string REQUEST_PAYMENT_STATUS => "REQUEST_PAYMENT";
+
+        public static string TIBCO_OK_RESULT_MESSAGE => "OK";
+
+        public static string ENDPAYMENT_SENTED_STATUS => "ENVIADO_TIBCO";
+
+        public static string RESPONSEPAYMENT_TYPE_POST => "MULTIPAGOS_POST";
+
+        public static string RESPONSEPAYMENT_TYPE_S2S => "MULTIPAGOS_SERVER2SERVER";
+
     }
 }

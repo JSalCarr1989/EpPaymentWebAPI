@@ -13,6 +13,7 @@ namespace EPWebAPI.Interfaces
         void LogGetEndPayment(int responsePaymentId, EndPayment endPayment);
         void LogUpdateEndPaymentSentStatus(int endPayment, string endPaymentSentStatus);
         void LogSendEndPaymentToTibco(ResponseBankRequestType requestToTibco, ResponseBankResponse responseFromTibco);
+        void LogCreateRequestPayment(RequestPayment requestPayment,int requestPaymentId);
         
     }
 }

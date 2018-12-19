@@ -29,7 +29,11 @@ namespace EPWebAPI.Models
 
         public static string EndPaymentStage => "EndPayment";
 
+        public static string RequestPaymentStage => "RequestPayment";
+
         public static string ComunicationStep => "FROM MULTIPAGOS TO .NET CORE MVC WEB APP POST RESPONSE";
+
+        public static string RequestComunicationStep => "FROM .NET COR MVC WEB APP TO MULTIPAGOS";
 
         public static string Application => ".NET CORE MVC WEB APP";
 
@@ -145,7 +149,50 @@ namespace EPWebAPI.Models
                                                  ComunicationStep:{@LogComunicationStep} 
                                                  Application:{@Application}";
 
+        public static string CreateRequestPaymentMessageTemplate => @"Before Insert Request Payment with the following data: 
+                                                                      MpAccount: {@MpAccount} 
+                                                                      MpProduct: {@MpProduct}
+                                                                      MpOrder: {@MpOrder}
+                                                                      MpReference: {@MpReference}
+                                                                      MpNode: {@MpNode}
+                                                                      MpConcept: {@MpConcept}
+                                                                      MpAmount: {@MpAmount}
+                                                                      MpCustomerName: {@MpCustomerName}
+                                                                      MpCurrency: {@MpCurrency}
+                                                                      MpSignature: {@MpSignature}
+                                                                      MpUrlSuccess: {@MpUrlSuccess}
+                                                                      MpUrlFailure: {@MpUrlFailure}
+                                                                      MpRegisterSb: {@MpRegisterSb}
+                                                                      MpPaymentDateTime: {@MpPaymentDateTime}
+                                                                      requestPaymentId: {@requestPaymentId}
+                                                                      RequestPaymentStage: {@RequestPaymentStage}
+                                                                      ComunicationStep: {@RequestComunicationStep}
+                                                                      Application: {@Application}";
 
+        public void LogCreateRequestPayment(RequestPayment requestPayment, int requestPaymentId)
+        {
+            _logger.Information(
+                               CreateRequestPaymentMessageTemplate,
+                               requestPayment.MpAccount,
+                               requestPayment.MpProduct,
+                               requestPayment.MpOrder,
+                               requestPayment.MpReference,
+                               requestPayment.MpNode,
+                               requestPayment.MpConcept,
+                               requestPayment.MpAmount,
+                               requestPayment.MpCustomerName,
+                               requestPayment.MpCurrency,
+                               requestPayment.MpSignature,
+                               requestPayment.MpUrlSuccess,
+                               requestPayment.MpUrlFailure,
+                               requestPayment.MpRegisterSb,
+                               requestPayment.MpPaymentDatetime,
+                               requestPaymentId,
+                               RequestPaymentStage,
+                               RequestComunicationStep,
+                               Application
+                               );
+        }
 
         public void LogCreateResponsePayment(ResponsePaymentDTO responsePaymentDTO, int responsePaymentId)
         {

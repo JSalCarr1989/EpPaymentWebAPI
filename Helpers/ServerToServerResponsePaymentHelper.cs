@@ -1,5 +1,6 @@
 using System;
 using EPWebAPI.Models;
+using EPWebAPI.Utilities;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using EPWebAPI.Interfaces;
@@ -84,7 +85,7 @@ namespace EPWebAPI.Helpers
                 MpSbToken = string.IsNullOrWhiteSpace(multiPagosResponse.mp_sbtoken) ? "NO_GENERADO" : multiPagosResponse.mp_sbtoken,
                 MpSaleId = multiPagosResponse.mp_saleid,
                 MpCardHolderName = multiPagosResponse.mp_cardholdername,
-                ResponsePaymentTypeDescription = "MULTIPAGOS_SERVER2SERVER",
+                ResponsePaymentTypeDescription = StaticResponsePaymentProperties.RESPONSEPAYMENT_TYPE_S2S,
                 ResponsePaymentHashStatusDescription = hashStatus,
                 RequestPaymentId = requestPaymentId
             };

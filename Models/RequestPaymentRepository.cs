@@ -1,51 +1,36 @@
 using System.Data;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 using EPWebAPI.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Dapper;
 using System;
-using Serilog;
-using Serilog.Formatting.Compact;
 using EPWebAPI.Utilities;
 
 namespace EPWebAPI.Models {
     public class RequestPaymentRepository : IRequestPaymentRepository
     {
-        private readonly IConfiguration _config;
-        private readonly ILogger _logger;
+
+        private readonly IDbConnectionRepository _dbConnectionRepository;
+        private readonly IDbLoggerRepository _dbLoggerRepository;
+        private readonly IDbConnection _conn;
        
        
 
-        public RequestPaymentRepository(IConfiguration config)
+        public RequestPaymentRepository(IDbConnectionRepository dbConnectionRepository,
+                                        IDbLoggerRepository dbLoggerRepository)
         {
-            var logger = new LoggerConfiguration()
-                         .MinimumLevel.Debug()
-                         .WriteTo.RollingFile( new CompactJsonFormatter(),
-                                               @"E:\LOG\EnterprisePaymentLog.json",
-                                               shared:true,
-                                               retainedFileCountLimit:30
-                                               )
-                        .CreateLogger();
-            _logger = logger;
-            _config = config;
+            _dbConnectionRepository = dbConnectionRepository;
+            _dbLoggerRepository = dbLoggerRepository;
+            _conn = _dbConnectionRepository.CreateDbConnection();
         }
 
-        public IDbConnection Connection 
-        {
-            get 
-            {
-                return new SqlConnection(_config.GetConnectionString("EpWebAPIConnectionString"));
-            }
-        }
         public async Task<int> Create(RequestPayment requestPayment)
         {
             int id;
-            IDbConnection conn = Connection;
+            
             requestPayment.MpPaymentDatetime = DateTime.Now.ToString(StaticRequestEP.DATETIMEFORMAT);
             try 
             {
-            using(conn)
+            using(_conn)
             {
                 var parameters = new DynamicParameters();
 
@@ -68,42 +53,16 @@ namespace EPWebAPI.Models {
                                     dbType: DbType.Int32, 
                                     direction: ParameterDirection.Output);
 
-                conn.Open();
+                _conn.Open();
 
-                _logger.Information( 
-                                     StaticRequestEP.LogTemplateBeforeInsert,
-                                     requestPayment.MpAccount,
-                                     requestPayment.MpProduct,
-                                     requestPayment.MpOrder,
-                                     requestPayment.MpReference,
-                                     requestPayment.MpNode,
-                                     requestPayment.MpConcept,
-                                     requestPayment.MpAmount,
-                                     requestPayment.MpCustomerName,
-                                     requestPayment.MpCurrency,
-                                     requestPayment.MpSignature,
-                                     requestPayment.MpUrlSuccess,
-                                     requestPayment.MpUrlFailure,
-                                     requestPayment.MpRegisterSb,
-                                     requestPayment.MpPaymentDatetime,
-                                     StaticRequestEP.PaymentStage,
-                                     StaticRequestEP.ComunicationStep
-                                   );
-
-                await conn.QueryAsync(
+                await _conn.QueryAsync(
                     StaticRequestEP.SP_CREATE_REQUEST_ENTERPRISE_PAYMENT,
                     parameters,
                     commandType:CommandType.StoredProcedure);
 
                 id = parameters.Get<int>(StaticRequestEP.REQUEST_PAYMENT_ID_OUTPUT_SEARCH);
 
-                _logger.Information(
-                            StaticRequestEP.LogTemplateAfterInsert,
-                            id,
-                            requestPayment.MpOrder,
-                            requestPayment.MpReference
-                );
-                    
+                    _dbLoggerRepository.LogCreateRequestPayment(requestPayment, id);
 
                  return id;
             }
@@ -111,21 +70,21 @@ namespace EPWebAPI.Models {
 
             catch(Exception ex)
             {
-               _logger.Error(ex.ToString(),$"Failed Operation for serviceRequest:{requestPayment.MpOrder}");
+                ex.ToString();
                return 0;
             }
             finally
             {
-                conn.Close();
+                _conn.Close();
             }
         }
 
         public async  Task<RequestPayment> GetById(int id)
         {
-            using(IDbConnection conn = Connection)
+            using(_conn)
             {
-                conn.Open();
-                var result = await conn.QueryFirstOrDefaultAsync<RequestPayment>(StaticRequestEP.SP_EP_GET_REQUESTPAYMENT_BY_ID,new {RequestPaymentId = id},commandType:CommandType.StoredProcedure);
+                _conn.Open();
+                var result = await _conn.QueryFirstOrDefaultAsync<RequestPayment>(StaticRequestEP.SP_EP_GET_REQUESTPAYMENT_BY_ID,new {RequestPaymentId = id},commandType:CommandType.StoredProcedure);
                 return result;
             }
         }

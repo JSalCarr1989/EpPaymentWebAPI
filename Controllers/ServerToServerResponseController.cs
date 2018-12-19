@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using EPWebAPI.Models;
 using EPWebAPI.Interfaces;
 using EPWebAPI.Helpers;
+using EPWebAPI.Utilities;
 using Microsoft.Extensions.Configuration;
 
 namespace EPWebAPI.Controllers
@@ -50,13 +51,14 @@ namespace EPWebAPI.Controllers
                             _dbLoggerRepository
                             ); 
 
-            var hashStatus = (validHash) ? "HASH_VALIDO" : "HASH_INVALIDO";
+            var hashStatus = (validHash) ? StaticResponsePaymentProperties.VALID_HASH 
+                                         : StaticResponsePaymentProperties.INVALID_HASH;
 
             var logPayment = _logPaymentRepository.GetLastRequestPaymentId(
                 multipagosResponse.mp_amount,
                 multipagosResponse.mp_order,
                 multipagosResponse.mp_reference,
-                "REQUEST_PAYMENT"
+                StaticResponsePaymentProperties.REQUEST_PAYMENT_STATUS
                 );
 
 
@@ -70,8 +72,8 @@ namespace EPWebAPI.Controllers
 
 
             var sentExists = _sentToTibcoRepo.GetEndPaymentSentToTibco(
-                             "ENVIADO_TIBCO", 
-                             "MULTIPAGOS_POST", 
+                             StaticResponsePaymentProperties.ENDPAYMENT_SENTED_STATUS,
+                             StaticResponsePaymentProperties.RESPONSEPAYMENT_TYPE_POST, 
                              responsePaymentId
                              );
 
@@ -81,9 +83,9 @@ namespace EPWebAPI.Controllers
             {
                     string resultMessage = await _responseBankRequestTypeTibcoRepository.SendEndPaymentToTibco(endPayment);
 
-                if (resultMessage == "OK")
+                if (resultMessage == StaticResponsePaymentProperties.TIBCO_OK_RESULT_MESSAGE)
                 {
-                    _endPaymentRepository.UpdateEndPaymentSentStatus(endPayment.EndPaymentId, "ENVIADO_TIBCO");
+                    _endPaymentRepository.UpdateEndPaymentSentStatus(endPayment.EndPaymentId, StaticResponsePaymentProperties.ENDPAYMENT_SENTED_STATUS);
                 }
             }
 
