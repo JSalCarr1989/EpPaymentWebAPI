@@ -11,32 +11,50 @@ namespace EPWebAPI.Helpers
     public static class ServerToServerResponsePaymentHelper
     {
 
-      private static string ComputeSha256Hash(string rawData,string secret)
-        {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                secret = secret ?? "";
-                var encoding = new System.Text.ASCIIEncoding();
-                byte[] keyByte = encoding.GetBytes(secret);
-                byte[] messageBytes = encoding.GetBytes(rawData);
+      private static string ComputeSha256Hash(string rawData,string secret, IDbLoggerErrorRepository dbLoggerErrorRepository)
+       {
+            string computedHash = string.Empty;
 
-                using (var hmacsha256 = new HMACSHA256(keyByte))
+            try
+            {
+                using (SHA256 sha256Hash = SHA256.Create())
                 {
-                    byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
-                    return ByteToString(hashmessage);
+                    secret = secret ?? "";
+                    var encoding = new System.Text.ASCIIEncoding();
+                    byte[] keyByte = encoding.GetBytes(secret);
+                    byte[] messageBytes = encoding.GetBytes(rawData);
+
+                    using (var hmacsha256 = new HMACSHA256(keyByte))
+                    {
+                        byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
+                        computedHash = ByteToString(hashmessage,dbLoggerErrorRepository);
+                    }
                 }
             }
+            catch(Exception ex)
+            {
+                dbLoggerErrorRepository.LogCompute256HashError(ex.ToString());
+            }
+
+            return computedHash;
         }
 
-    public static string ByteToString(byte[] buff)
+    public static string ByteToString(byte[] buff,IDbLoggerErrorRepository dbLoggerErrorRepository)
         {
-            string sbinary = "";
+            string sbinary = string.Empty;
 
-
-            for (int i = 0; i < buff.Length; i++)
+            try
             {
-                sbinary += buff[i].ToString("X2"); // hex format
+                for (int i = 0; i < buff.Length; i++)
+                {
+                    sbinary += buff[i].ToString("X2"); // hex format
+                }
             }
+            catch(Exception ex)
+            {
+                dbLoggerErrorRepository.LogByteToStringError(ex.ToString());
+            }
+
             return (sbinary).ToLower();
         }
 
@@ -60,7 +78,7 @@ namespace EPWebAPI.Helpers
                 string MpSk = _mpsk;
 
                 var rawData = multipagosResponse.mp_order + multipagosResponse.mp_reference + multipagosResponse.mp_amount + multipagosResponse.mp_authorization;
-                var generatedHash = ComputeSha256Hash(rawData, MpSk);
+                var generatedHash = ComputeSha256Hash(rawData, MpSk,loggerErrorRepo);
 
                 result = (generatedHash == multipagosResponse.mp_signature) ? true : false;
 

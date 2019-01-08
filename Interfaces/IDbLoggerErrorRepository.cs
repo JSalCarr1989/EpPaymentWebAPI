@@ -10,5 +10,7 @@
         void LogCreateResponsePaymentError(string error, string mpReference, string mpOrder);
         void LogGetEndPaymentByResponsePaymentIdError(string error);
         void LogUpdateEndPaymentSentStatusError(string error);
+        void LogCompute256HashError(string error);
+        void LogByteToStringError(string error);
     }
 }

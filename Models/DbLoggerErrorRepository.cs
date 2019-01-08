@@ -43,6 +43,20 @@ namespace EPWebAPI.Models
 
         public static string LogUpdateEndPaymentSentStatusMessageTemplateError => @"The error: {@error} has ocurred in UpdateEndPaymentSentStatus function";
 
+        public static string LogCompute256HashMessageTemplateError => @"The error: {@error} has ocurred in Compute256Hash function";
+
+        public static string LogByteToStringMessageTemplateError => @"The error: {@error} has ocurred in ByteToString function";
+
+        public void LogByteToStringError(string error)
+        {
+            _logger.Error(LogByteToStringMessageTemplateError, error);
+        }
+
+        public void LogCompute256HashError(string error)
+        {
+            _logger.Error(LogCompute256HashMessageTemplateError, error);
+        }
+
         public void LogCreateResponsePaymentError(string error, string mpReference, string mpOrder)
         {
             _logger.Error(LogCreateResponsePaymentMessageTemplateError, error, mpReference, mpOrder);
