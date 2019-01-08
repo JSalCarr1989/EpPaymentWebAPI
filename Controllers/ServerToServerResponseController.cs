@@ -18,6 +18,7 @@ namespace EPWebAPI.Controllers
         private readonly ISentToTibcoRepository _sentToTibcoRepo;
         private readonly IConfiguration _config;
         private readonly IDbLoggerRepository _dbLoggerRepository;
+        private readonly IDbLoggerErrorRepository _dbLoggerErrorRepository;
 
         public ServerToServerResponseController(
                             ILogPaymentRepository logPaymentRepository,
@@ -26,7 +27,8 @@ namespace EPWebAPI.Controllers
                             IResponseBankRequestTypeTibcoRepository responseBankRequestTypeTibcoRepository, 
                             ISentToTibcoRepository sentToTibcoRepo,
                             IConfiguration config,
-                            IDbLoggerRepository dbLoggerRepository
+                            IDbLoggerRepository dbLoggerRepository,
+                            IDbLoggerErrorRepository dbLoggerErrorRepository
             )
         {
             _logPaymentRepository = logPaymentRepository;
@@ -35,6 +37,7 @@ namespace EPWebAPI.Controllers
             _responseBankRequestTypeTibcoRepository = responseBankRequestTypeTibcoRepository;
             _sentToTibcoRepo = sentToTibcoRepo;
             _dbLoggerRepository = dbLoggerRepository;
+            _dbLoggerErrorRepository = dbLoggerErrorRepository;
             _config = config;
         }
         
@@ -48,7 +51,8 @@ namespace EPWebAPI.Controllers
             var validHash = ServerToServerResponsePaymentHelper.ValidateMultipagosHash(
                             multipagosResponse,
                             _config,
-                            _dbLoggerRepository
+                            _dbLoggerRepository,
+                            _dbLoggerErrorRepository
                             ); 
 
             var hashStatus = (validHash) ? StaticResponsePaymentProperties.VALID_HASH 
@@ -65,7 +69,8 @@ namespace EPWebAPI.Controllers
             var responsePaymentDTO = ServerToServerResponsePaymentHelper.GenerateResponsePaymentDTO(
                 multipagosResponse,
                 logPayment.RequestPaymentId,
-                hashStatus
+                hashStatus,
+                _dbLoggerErrorRepository
             );
 
             int responsePaymentId = _responsePaymentRepository.CreateResponsePayment(responsePaymentDTO);

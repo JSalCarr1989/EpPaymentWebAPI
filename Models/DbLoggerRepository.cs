@@ -19,11 +19,13 @@ namespace EPWebAPI.Models
 
             var logger = new LoggerConfiguration()
                .MinimumLevel.Information()
-               .WriteTo.MSSqlServer(dbConnectionRepository.GetEpPaymentConnectionString(), "Log")
+               .WriteTo.MSSqlServer(dbConnectionRepository.GetEpPaymentConnectionString(), EpLogTable)
                .CreateLogger();
 
             _logger = logger;
         }
+
+        public static string EpLogTable => "EpLog";
 
         public static string ResponsePaymentStage => "ResponsePayment";
 
@@ -122,6 +124,8 @@ namespace EPWebAPI.Models
                                              ServiceRequest: {@ServiceRequest} 
                                              BillingAccount: {@BillingAccount} 
                                              PaymentReference: {@PaymentReference} 
+                                             ResponsePaymentId: {@ResponsePaymentId}
+                                             EndPaymentStatusId: {@EndPaymentStatusId}
                                              PaymentStage:{@EndPaymentStage} 
                                              ComunicationStep:{@LogComunicationStep} 
                                              Application:{@Application}";
@@ -242,6 +246,8 @@ namespace EPWebAPI.Models
                 endPayment.ServiceRequest,
                 endPayment.BillingAccount,
                 endPayment.PaymentReference,
+                endPayment.ResponsePaymentId,
+                endPayment.EndPaymentStatusId,
                 EndPaymentStage,
                 ComunicationStep,
                 Application

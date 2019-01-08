@@ -13,16 +13,19 @@ namespace EPWebAPI.Models
     {
        
         private readonly IDbLoggerRepository _dbLoggerRepository;
+        private readonly IDbLoggerErrorRepository _dbLoggerErrorRepository;
         private readonly IDbConnectionRepository _connectionRepository;
         private readonly IDbConnection _conn;
 
         public LogPaymentRepository(
                                     IDbLoggerRepository dbLoggerRepository,
+                                    IDbLoggerErrorRepository dbLoggerErrorRepository,
                                     IDbConnectionRepository connectionRepository
                                   )
         {
             _connectionRepository = connectionRepository;
             _dbLoggerRepository = dbLoggerRepository;
+            _dbLoggerErrorRepository = dbLoggerErrorRepository;
             _conn = connectionRepository.CreateDbConnection();
         }
 
@@ -56,12 +59,12 @@ namespace EPWebAPI.Models
                            string StatusPayment
             )
         {
-            LogPayment result = new LogPayment();
+            LogPayment result = null;
 
-            using(_conn)
+            try
             {
-                 try 
-                 {
+                using (_conn)
+                {
                     var parameters = new DynamicParameters();
                     parameters.Add(StaticLogPaymentProperties.PAYMENT_REQUEST_AMOUNT, amount);
                     parameters.Add(StaticLogPaymentProperties.SERVICE_REQUEST, serviceRequest);
@@ -72,21 +75,21 @@ namespace EPWebAPI.Models
 
                     result = _conn.QueryFirstOrDefault<LogPayment>(
                         StaticLogPaymentProperties.GET_LAST_REQUESTPAYMENT_ID,
-                        parameters, 
+                        parameters,
                         commandType: CommandType.StoredProcedure
                         );
 
                     _dbLoggerRepository.LogGetLastRequestPaymentId(amount, serviceRequest, paymentReference, StatusPayment, result.RequestPaymentId);
 
-                    return result;
-
-                 }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.ToString());
-                    return result;
+                    
                 }
             }
+            catch(Exception ex)
+            {
+                _dbLoggerErrorRepository.LogGetLastRequestPaymentIdError(ex.ToString(), serviceRequest, paymentReference);
+            }
+
+            return result;
         }
     }
 }
