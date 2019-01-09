@@ -173,6 +173,16 @@ namespace EPWebAPI.Models
                                                                       ComunicationStep: {@RequestComunicationStep}
                                                                       Application: {@Application}";
 
+        public static string CreateRequestHashMessageTemplate => @"Request Hash Created: Hash:{@hash} with the following 
+                                                                                         data: PaymentOrder: {@paymentOrder}
+                                                                                               PaymentReference: {@paymentReference}
+                                                                                               PaymentAmount: {@paymentAmount}";
+
+        public void LogCreateRequestHash(Hash createdHash,HashDTO hashData)
+        {
+            _logger.Information(CreateRequestHashMessageTemplate, createdHash.hash,hashData.paymentOrder,hashData.paymentReference,hashData.paymentAmount);
+        }
+
         public void LogCreateRequestPayment(RequestPayment requestPayment, int requestPaymentId)
         {
             _logger.Information(

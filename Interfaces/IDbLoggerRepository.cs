@@ -14,6 +14,6 @@ namespace EPWebAPI.Interfaces
         void LogUpdateEndPaymentSentStatus(int endPayment, string endPaymentSentStatus);
         void LogSendEndPaymentToTibco(ResponseBankRequestType requestToTibco, ResponseBankResponse responseFromTibco);
         void LogCreateRequestPayment(RequestPayment requestPayment,int requestPaymentId);
-        
+        void LogCreateRequestHash(Hash createdHash,HashDTO hashData);
     }
 }

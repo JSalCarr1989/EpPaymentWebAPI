@@ -47,6 +47,11 @@ namespace EPWebAPI.Models
 
         public static string LogByteToStringMessageTemplateError => @"The error: {@error} has ocurred in ByteToString function";
 
+        public static string LogCreateRequestHashMessageTemplateError => @"The error: {@error} has ocurred in CreateRequestHash function";
+
+        public static string LogCreateRequestPaymentMessageTemplateError => @"The error: {@error} has ocurred in CreateRequestPayment function 
+                                                                               for the MpReference:{@mpReference} and MpOrder:{@mpOrder}"; 
+
         public void LogByteToStringError(string error)
         {
             _logger.Error(LogByteToStringMessageTemplateError, error);
@@ -55,6 +60,16 @@ namespace EPWebAPI.Models
         public void LogCompute256HashError(string error)
         {
             _logger.Error(LogCompute256HashMessageTemplateError, error);
+        }
+
+        public void LogCreateRequestHashError(string error)
+        {
+            _logger.Error(LogCreateRequestHashMessageTemplateError, error);
+        }
+
+        public void LogCreateRequestPaymentError(string error, string mpReference, string mpOrder)
+        {
+            _logger.Error(LogCreateRequestPaymentMessageTemplateError, error, mpReference,mpOrder);
         }
 
         public void LogCreateResponsePaymentError(string error, string mpReference, string mpOrder)

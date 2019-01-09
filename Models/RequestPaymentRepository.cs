@@ -11,21 +11,24 @@ namespace EPWebAPI.Models {
 
         private readonly IDbConnectionRepository _dbConnectionRepository;
         private readonly IDbLoggerRepository _dbLoggerRepository;
+        private readonly IDbLoggerErrorRepository _dbLoggerErrorRepository;
         private readonly IDbConnection _conn;
        
        
 
         public RequestPaymentRepository(IDbConnectionRepository dbConnectionRepository,
-                                        IDbLoggerRepository dbLoggerRepository)
+                                        IDbLoggerRepository dbLoggerRepository,
+                                        IDbLoggerErrorRepository dbLoggerErrorRepository)
         {
             _dbConnectionRepository = dbConnectionRepository;
             _dbLoggerRepository = dbLoggerRepository;
+            _dbLoggerErrorRepository = dbLoggerErrorRepository;
             _conn = _dbConnectionRepository.CreateDbConnection();
         }
 
         public async Task<int> Create(RequestPayment requestPayment)
         {
-            int id;
+            int id = 0;
             
             requestPayment.MpPaymentDatetime = DateTime.Now.ToString(StaticRequestEP.DATETIMEFORMAT);
             try 
@@ -64,19 +67,15 @@ namespace EPWebAPI.Models {
 
                     _dbLoggerRepository.LogCreateRequestPayment(requestPayment, id);
 
-                 return id;
+                 
             }
             }
-
             catch(Exception ex)
             {
-                ex.ToString();
-               return 0;
+                _dbLoggerErrorRepository.LogCreateRequestPaymentError(ex.ToString(), requestPayment.MpReference, requestPayment.MpOrder);
             }
-            finally
-            {
-                _conn.Close();
-            }
+
+            return id;
         }
 
         public async  Task<RequestPayment> GetById(int id)

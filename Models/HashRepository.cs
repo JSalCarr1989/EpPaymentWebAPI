@@ -9,17 +9,25 @@ namespace EPWebAPI.Models
     {
 
         private readonly IConfiguration _config;
+        private readonly IDbLoggerRepository _dbLoggerRepository;
+        private readonly IDbLoggerErrorRepository _dbLoggerErrorRepository;
         
 
-        public HashRepository(IConfiguration config)
+        public HashRepository(IConfiguration config,
+                              IDbLoggerErrorRepository dbLoggerErrorRepository,
+                              IDbLoggerRepository dbLoggerRepository)
         {
             _config = config;
+            _dbLoggerErrorRepository = dbLoggerErrorRepository;
+            _dbLoggerRepository = dbLoggerRepository;
 
         }
 
         public Hash CreateRequestHash(HashDTO hash)
         {
             string hashString = string.Empty;
+
+            Hash createdHash = null;
 
             try
             {
@@ -35,21 +43,21 @@ namespace EPWebAPI.Models
 
                  hashString = StaticRequestEP.ComputeSha256Hash(rawString,MpSk);
 
-                 Hash createdHash = new Hash 
+                 createdHash = new Hash 
                  {
                     hash = hashString
-                 }; 
+                 };
 
-                 return createdHash;
 
+                _dbLoggerRepository.LogCreateRequestHash(createdHash, hash);
             }
             
             catch(Exception ex)
             {
-               Console.WriteLine(ex.ToString());
-               Hash createdHash = new Hash();
-               return createdHash;
-            } 
+                _dbLoggerErrorRepository.LogCreateRequestHashError(ex.ToString());
+            }
+
+            return createdHash;
         }
 
 
