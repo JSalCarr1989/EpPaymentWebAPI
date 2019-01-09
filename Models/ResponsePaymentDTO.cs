@@ -1,3 +1,5 @@
+using System;
+
 namespace EPWebAPI.Models
 {
     public class ResponsePaymentDTO
@@ -12,7 +14,7 @@ namespace EPWebAPI.Models
         public string MpAuthorization { get; set; }
         public string MpSignature { get; set; }
         public string MpPan { get; set; }
-        public string MpDate { get; set; }
+        public DateTime MpDate { get; set; }
         public string MpBankName { get; set; }
         public string MpFolio { get; set; }
         public string MpSbToken { get; set; }
