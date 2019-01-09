@@ -111,7 +111,7 @@ namespace EPWebAPI.Helpers
                     MpAuthorization = multiPagosResponse.mp_authorization,
                     MpSignature = multiPagosResponse.mp_signature,
                     MpPan = multiPagosResponse.mp_pan,
-                    MpDate = multiPagosResponse.mp_date,
+                    MpDate = (string.IsNullOrWhiteSpace(multiPagosResponse.mp_date)) ? DateTime.Now : Convert.ToDateTime(multiPagosResponse.mp_date),
                     MpBankName = multiPagosResponse.mp_bankname,
                     MpFolio = string.IsNullOrWhiteSpace(multiPagosResponse.mp_folio) ? "NO_GENERADO" : multiPagosResponse.mp_folio,
                     MpSbToken = string.IsNullOrWhiteSpace(multiPagosResponse.mp_sbtoken) ? "NO_GENERADO" : multiPagosResponse.mp_sbtoken,
