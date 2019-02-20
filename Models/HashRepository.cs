@@ -17,11 +17,13 @@ namespace EPWebAPI.Models
 
         public HashRepository(IConfiguration config,
                               IDbLoggerErrorRepository dbLoggerErrorRepository,
-                              IDbLoggerRepository dbLoggerRepository)
+                              IDbLoggerRepository dbLoggerRepository,
+                              IEnvironmentSettingsRepository environmentSettingsRepository)
         {
             _config = config;
             _dbLoggerErrorRepository = dbLoggerErrorRepository;
             _dbLoggerRepository = dbLoggerRepository;
+            _environmentSettingsRepository = environmentSettingsRepository;
 
         }
 
@@ -33,7 +35,7 @@ namespace EPWebAPI.Models
 
             try
             {
-                //var environmentMpSk = Environment.GetEnvironmentVariable("MpSk", EnvironmentVariableTarget.Machine);
+                
 
                 string environmentMpSk = _environmentSettingsRepository.GetMpSK();
 
