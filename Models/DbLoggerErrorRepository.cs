@@ -7,16 +7,21 @@ namespace EPWebAPI.Models
     public class DbLoggerErrorRepository : IDbLoggerErrorRepository
     {
 
-        private readonly IDbConnectionRepository _connectionStringRepo;
+        
         private readonly ILogger _logger;
+        private readonly IEnvironmentSettingsRepository _environmentSettingsRepository;
 
-        public DbLoggerErrorRepository(IDbConnectionRepository connectionStringRepo)
+        public DbLoggerErrorRepository(
+                                       IDbConnectionRepository connectionStringRepo, 
+                                       IEnvironmentSettingsRepository environmentSettingsRepository
+                                       )
         {
-            _connectionStringRepo = connectionStringRepo;
+           
+            _environmentSettingsRepository = environmentSettingsRepository;
 
             var logger = new LoggerConfiguration()
                .MinimumLevel.Information()
-               .WriteTo.MSSqlServer(_connectionStringRepo.GetEpPaymentConnectionString(), EpLogErrorTable)
+               .WriteTo.MSSqlServer(_environmentSettingsRepository.GetConnectionString(), EpLogErrorTable)
                .CreateLogger();
 
             _logger = logger;

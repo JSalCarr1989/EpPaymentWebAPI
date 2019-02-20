@@ -19,7 +19,7 @@ namespace EPWebAPI.Models
             _envSettings = GetSettingsObject(_hostingEnvironment.EnvironmentName);
         }
 
-        public string GetConnectionStringSetting()
+        public string GetConnectionString()
         {
             return _envSettings.ConnectionString;
         }

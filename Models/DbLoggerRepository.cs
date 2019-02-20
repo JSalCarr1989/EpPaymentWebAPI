@@ -8,18 +8,22 @@ namespace EPWebAPI.Models
     public class DbLoggerRepository : IDbLoggerRepository
     {
 
-        private readonly IDbConnectionRepository _dbConnectionRepository;
+        
         private readonly ILogger _logger;
+        private readonly IEnvironmentSettingsRepository _environmentSettingsRepository;
 
 
-        public DbLoggerRepository(IDbConnectionRepository dbConnectionRepository)
+        public DbLoggerRepository(
+                          IDbConnectionRepository dbConnectionRepository,
+                          IEnvironmentSettingsRepository environmentSettingsRepository
+                          )
         {
-            _dbConnectionRepository = dbConnectionRepository;
-
+            
+            _environmentSettingsRepository = environmentSettingsRepository;
 
             var logger = new LoggerConfiguration()
                .MinimumLevel.Information()
-               .WriteTo.MSSqlServer(dbConnectionRepository.GetEpPaymentConnectionString(), EpLogTable)
+               .WriteTo.MSSqlServer(_environmentSettingsRepository.GetConnectionString(), EpLogTable)
                .CreateLogger();
 
             _logger = logger;

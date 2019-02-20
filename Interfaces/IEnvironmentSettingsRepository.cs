@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace EPWebAPI.Interfaces
 {
-    interface IEnvironmentSettingsRepository
+    public interface IEnvironmentSettingsRepository
     {
-        string GetConnectionStringSetting();
+        string GetConnectionString();
         string GetMpSK();
         string GetUrlSuccess();
         string GetUrlFailure();
