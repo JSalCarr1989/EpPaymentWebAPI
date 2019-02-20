@@ -19,6 +19,8 @@ namespace EPWebAPI.Extensions
             services.AddTransient<IHashRepository, HashRepository>();
             services.AddTransient<IResponsePaymentRepository, ResponsePaymentRepository>();
             services.AddTransient<ISentToTibcoRepository, SentToTibcoRepository>();
+            services.AddTransient<IEnterprisePaymentMonitorRepository, EnterprisePaymentMonitorRepository>();
+            
 
             return services;
         }

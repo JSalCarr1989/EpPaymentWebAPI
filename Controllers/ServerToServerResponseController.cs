@@ -48,6 +48,7 @@ namespace EPWebAPI.Controllers
 
             _dbLoggerRepository.LogResponsedDataToDb(multipagosResponse);
 
+
             var validHash = ServerToServerResponsePaymentHelper.ValidateMultipagosHash(
                             multipagosResponse,
                             _config,
