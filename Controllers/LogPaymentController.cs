@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using EPWebAPI.Interfaces;
-using EPWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using EPPCIDAL.Interfaces;
+using EPPCIDAL.Models;
+
 
 namespace EPWebAPI.Controllers
 {
@@ -12,17 +11,19 @@ namespace EPWebAPI.Controllers
     [ApiController]
     public class LogPaymentController : ControllerBase
     {
-        private readonly ILogPaymentRepository _logPaymentRepo;
+        
+        private readonly ILogPaymentService _logPaymentService;
 
-        public LogPaymentController(ILogPaymentRepository logPaymentRepo)
+        public LogPaymentController(ILogPaymentService logPaymentService)
         {
-            _logPaymentRepo = logPaymentRepo;
+            
+            _logPaymentService = logPaymentService;
         }
         
         [HttpGet("{serviceRequest}/{paymentReference}")]
         public async Task<List<LogPayment>> GetByServiceRequestAndPaymentReference(string serviceRequest,string paymentReference)
         {
-           return await _logPaymentRepo.GetByServiceRequestAndPaymentReference(serviceRequest,paymentReference);
+            return await _logPaymentService.GetByServiceRequestAndPaymentReference(serviceRequest, paymentReference);
         }
     }
 }

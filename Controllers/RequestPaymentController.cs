@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
-using EPWebAPI.Interfaces;
-using EPWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using EPPCIDAL.Interfaces;
+using EPPCIDAL.Models;
+using System;
 
 namespace EPWebAPI.Controllers
 {
@@ -9,23 +10,40 @@ namespace EPWebAPI.Controllers
     [ApiController]
     public class RequestPaymentController : ControllerBase
     {
-        private readonly IRequestPaymentRepository _requestPaymentRepo;
+        
+        private readonly IRequestPaymentService _requestPaymentService;
 
-        public RequestPaymentController(IRequestPaymentRepository requestPaymentRepo)
+        public RequestPaymentController(
+            
+            IRequestPaymentService requestPaymentService
+            )
         {
-            _requestPaymentRepo = requestPaymentRepo;
+            
+            _requestPaymentService = requestPaymentService;
         }
 
         [HttpGet("{id}",Name="GetRequestPayment")]
         public async Task<RequestPayment> GetById([FromRoute] int id)
         {
-            return await _requestPaymentRepo.GetById(id);
+            RequestPayment requestPayment = null;
+
+            try
+            {
+                requestPayment =  await _requestPaymentService.GetByIdAsync(id);
+            }
+            catch(Exception ex)
+            {
+
+            }
+            
+
+            return requestPayment;
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody]RequestPayment requestPayment){
+        public async Task<IActionResult> Create([FromBody]RequestPayment requestPayment){
 
-            Task<int> RequestPaymentId = _requestPaymentRepo.Create(requestPayment);
+            int RequestPaymentId =  await _requestPaymentService.CreateAsync(requestPayment);
             return CreatedAtRoute("GetRequestPayment",new {id = RequestPaymentId},requestPayment);
         }
 

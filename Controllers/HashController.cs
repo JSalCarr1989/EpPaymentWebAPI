@@ -1,10 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EPWebAPI.Interfaces;
-using EPWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using EPPCIDAL.Interfaces;
+using EPPCIDAL.Models;
+using EPPCIDAL.DTO;
+using EPPCIDAL.Services;
+
 
 namespace EPWebAPI.Controllers
 {
@@ -13,17 +12,18 @@ namespace EPWebAPI.Controllers
     public class HashController : ControllerBase
     {
 
-        private readonly IHashRepository _hashRepo;
+        //private readonly IHashRepository _hashRepo;
+        private readonly IHashService _hashService;
 
-        public HashController(IHashRepository hashRepo)
+        public HashController(IHashService hashService)
         {
-           _hashRepo = hashRepo;
+           _hashService = hashService;
         }
 
         [HttpPost]
         public Hash CreateRequestHash([FromBody] HashDTO hash)
         {
-            return _hashRepo.CreateRequestHash(hash);
+            return _hashService.CreateRequestHash(hash);
         }
 
     }
